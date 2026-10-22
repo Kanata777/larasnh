@@ -1,0 +1,88 @@
+/* Semua aturan diawali .mp supaya tidak bentrok dengan CSS layout */
+
+.mp {
+    --navy: #123c70; --blue: #1675ce; --text: #1e293b; --muted: #64748b; --line: #e5eaf1;
+}
+
+/* ---------- Alert ---------- */
+.mp .alert { padding: 12px 14px; border-radius: 8px; font-size: 13px; margin-bottom: 18px; line-height: 1.6; }
+.mp .alert-error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+.mp .alert-error ul { margin: 6px 0 0 18px; }
+
+/* ---------- Tabs ---------- */
+.mp .tabs { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-bottom: 20px; }
+.mp .tab { background: #fff; border: 1px solid var(--line); border-radius: 12px; padding: 16px; text-align: left; cursor: pointer; font: inherit; color: var(--text); }
+.mp .tab .icon { font-size: 24px; margin-bottom: 8px; display: block; }
+.mp .tab strong { display: block; font-size: 13px; margin-bottom: 4px; }
+.mp .tab .desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.mp .tab:hover { border-color: var(--blue); }
+.mp .tab.active { border-color: var(--blue); border-top: 4px solid var(--blue); background: #f5faff; }
+.mp .tab-panel { display: none; }
+.mp .tab-panel.active { display: block; }
+
+/* ---------- Tabel ---------- */
+.mp .table-wrap { overflow-x: auto; }
+.mp table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mp th { text-align: left; font-size: 11px; color: var(--muted); font-weight: 600; padding: 0 10px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.mp td { padding: 12px 10px; border-bottom: 1px solid #f1f4f8; vertical-align: middle; }
+.mp tr:last-child td { border-bottom: none; }
+.mp td.actions { white-space: nowrap; text-align: right; }
+.mp .empty { color: var(--muted); font-size: 13px; line-height: 1.7; padding: 8px 0; }
+
+/* ---------- Badge ---------- */
+.mp .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+.mp .badge-green { background: #d1fae5; color: #065f46; }
+.mp .badge-gray { background: #e2e8f0; color: #475569; }
+.mp .badge-blue { background: #dbeafe; color: #1e40af; }
+.mp .badge-orange { background: #fef3c7; color: #92400e; }
+
+/* ---------- Tombol tambahan ---------- */
+.mp .btn-danger { background: #fee2e2; color: #b91c1c; }
+.mp .btn-danger:hover { background: #fecaca; }
+.mp .btn-sm { padding: 6px 10px; }
+.mp .inline-form { display: inline; }
+
+/* ---------- Referensi ---------- */
+.mp .ref-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
+.mp .ref-box { border: 1px solid var(--line); border-radius: 10px; padding: 16px; min-width: 0; }
+.mp .ref-box h4 { font-size: 14px; margin-bottom: 12px; }
+.mp .ref-list { list-style: none; max-height: 280px; overflow-y: auto; margin-bottom: 12px; padding: 0; }
+.mp .ref-list li { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 0; border-bottom: 1px solid #f1f4f8; font-size: 13px; }
+.mp .ref-list li:last-child { border-bottom: none; }
+.mp .ref-actions { display: flex; gap: 4px; flex-shrink: 0; }
+.mp .ref-add { display: flex; gap: 8px; }
+
+/* ---------- Form ---------- */
+.mp label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; }
+.mp input[type=text],
+.mp input[type=date],
+.mp input[type=number],
+.mp select,
+.mp textarea {
+    width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 8px;
+    font-size: 13px; font-family: inherit; background: #fff; color: var(--text);
+}
+.mp textarea { resize: vertical; min-height: 70px; }
+.mp .field { margin-bottom: 14px; }
+.mp .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ---------- Modal ---------- */
+.mp dialog { border: none; border-radius: 14px; padding: 0; width: min(480px, calc(100% - 32px)); margin: auto; color: var(--text); }
+.mp dialog::backdrop { background: #0f172a80; }
+.mp .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--line); display: flex; justify-content: space-between; align-items: center; }
+.mp .modal-head h3 { font-size: 16px; }
+.mp .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--muted); }
+.mp .modal-body { padding: 22px; }
+.mp .modal-foot { padding: 14px 22px; border-top: 1px solid var(--line); display: flex; justify-content: flex-end; gap: 10px; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+    .mp .tabs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .mp .ref-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 700px) {
+    .mp .field-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 420px) {
+    .mp .tabs { grid-template-columns: 1fr; }
+}
