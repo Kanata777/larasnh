@@ -81,12 +81,17 @@ class IndexController extends BaseController
             ->get(['id', 'nama']);
     }
 
+    /**
+     * Wali per kelas, dikelompokkan menurut kelas_id.
+     * Kolom `peran` (utama / asisten) dan `menggantikan` ikut diambil, utama diurutkan lebih dulu.
+     */
     private function daftarWaliPerKelas()
     {
         return DB::table('kelas_wali_kelas as kw')
             ->join('wali_kelas as w', 'w.id', '=', 'kw.wali_kelas_id')
+            ->orderByRaw("kw.peran = 'utama' DESC")
             ->orderBy('w.nama')
-            ->get(['kw.kelas_id', 'w.id', 'w.nama'])
+            ->get(['kw.kelas_id', 'w.id', 'w.nama', 'kw.peran', 'kw.menggantikan'])
             ->groupBy('kelas_id');
     }
 

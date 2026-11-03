@@ -12,6 +12,7 @@ use App\Http\Controllers\SuperAdmin\LaporanController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\IndexController as MasterIndexController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasController as MasterKelasController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasImportController as MasterKelasImportController;
+use App\Http\Controllers\SuperAdmin\MasterPendukung\OrangTuaController as MasterOrangTuaController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\ReferensiController as MasterReferensiController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\TahunPelajaranController as MasterTahunController;
 use App\Http\Controllers\SuperAdmin\SiswaController;
@@ -35,11 +36,14 @@ Route::prefix('siswa')->name('siswa.')->where(['id' => '[0-9]+'])->group(functio
     Route::get('/import/preview', fn() => redirect()->route('super-admin.siswa.import')
         ->with('info', 'Silakan unggah ulang file untuk melanjutkan.'));
     Route::post('/import/process', [SiswaImportController::class, 'process'])->name('import.process');
-    
+
     // Export Excel
     Route::get('/{id}/export', [SiswaExportController::class, 'siswa'])->name('export');
 
     // Detail, ubah, status
+    Route::get('/terhapus', [SiswaController::class, 'terhapus'])->name('terhapus');
+    Route::patch('/{id}/pulihkan', [SiswaController::class, 'restore'])->name('restore');
+    Route::delete('/{id}', [SiswaController::class, 'destroy'])->name('destroy');
     Route::get('/{id}', [SiswaController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [SiswaController::class, 'edit'])->name('edit');
     Route::put('/{id}', [SiswaController::class, 'update'])->name('update');
@@ -74,18 +78,14 @@ Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () 
         Route::post('cancel', 'cancel')->name('cancel');
     });
 
-    // Referensi & orang tua
-    Route::controller(MasterReferensiController::class)->group(function () {
-        Route::post('referensi', 'store')->name('referensi.store');
-        Route::put('referensi/{id}', 'update')->name('referensi.update');
-        Route::delete('referensi/{id}', 'destroy')->name('referensi.destroy');
-
-        Route::post('orang-tua', 'storeOrangTua')->name('orang-tua.store');
-        Route::put('orang-tua/{orangTua}', 'updateOrangTua')->name('orang-tua.update');
-        Route::delete('orang-tua/{orangTua}', 'destroyOrangTua')->name('orang-tua.destroy');
-    });
 });
-
+/* ===== Data Orang Tua ===== */
+Route::prefix('orang-tua')->name('orang-tua.')->controller(MasterOrangTuaController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::put('{orangTua}', 'update')->name('update');
+    Route::delete('{orangTua}', 'destroy')->name('destroy');
+});
 /* ===== Laporan ===== */
 Route::prefix('laporan')->name('laporan.')->controller(LaporanController::class)->group(function () {
     Route::get('/', 'index')->name('index');

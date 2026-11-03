@@ -18,6 +18,14 @@ return [
         'key' => env('POSTMARK_API_KEY'),
     ],
 
+    'sim_pegawai' => [
+        'url' => env('SIM_PEGAWAI_URL'),
+        'key' => env('SIM_PEGAWAI_KEY'),
+        'unit_id' => (int) env('SIM_PEGAWAI_UNIT_ID', 5),
+        'verify_ssl' => env('SIM_PEGAWAI_VERIFY_SSL', true),
+        'hanya_wali_kelas' => env('SIM_PEGAWAI_HANYA_WALI_KELAS', false),
+    ],
+
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],

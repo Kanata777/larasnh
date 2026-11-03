@@ -22,6 +22,9 @@ use Illuminate\Validation\Rule;
  */
 class SiswaController extends Controller
 {
+    /** Nama kelas khusus untuk siswa yang belum punya kelas pada suatu tahun pelajaran. */
+    private const KELAS_BELUM = 'Belum ditempatkan';
+
     /* ===================== DAFTAR SISWA ===================== */
 
     public function index(Request $request)
@@ -74,11 +77,15 @@ class SiswaController extends Controller
                 'siswa.status_siswa',
                 'kelas.nama_kelas'
             );
+        $query->whereNull('siswa.deleted_at');
 
-        // Siswa yang belum pernah ditempatkan di kelas mana pun (tahun apa pun).
+        // Siswa yang belum pernah ditempatkan di kelas sungguhan (tahun apa pun).
+        // Kelas khusus "Belum ditempatkan" tidak dihitung sebagai kelas.
         $belumPunyaKelas = fn($q) => $q->select(DB::raw(1))
             ->from('riwayat_kelas as x')
-            ->whereColumn('x.siswa_id', 'siswa.id');
+            ->join('kelas as kx', 'kx.id', '=', 'x.kelas_id')
+            ->whereColumn('x.siswa_id', 'siswa.id')
+            ->where('kx.nama_kelas', '!=', self::KELAS_BELUM);
 
         if ($guru) {
             // Guru: hanya siswa di kelas yang diampunya (tanpa "semua" / "tanpa kelas")
@@ -179,14 +186,25 @@ class SiswaController extends Controller
     {
         $data = SiswaData::load($id);
         abort_unless($data, 404);
+        $this->pastikanBolehDilihat($id);
 
-        return RoleView::make('siswa.form', $this->formData($id, RoleAccess::saring($data)));
+        $form = $this->formData($id, RoleAccess::saring($data));
+
+        // Tahun pelajaran penempatan terakhir (tetap ada walau kelasnya "Belum ditempatkan")
+        $form['data']['tahun_pelajaran_id'] = DB::table('riwayat_kelas as rk')
+            ->join('tahun_pelajaran as tp', 'tp.id', '=', 'rk.tahun_pelajaran_id')
+            ->where('rk.siswa_id', $id)
+            ->orderByDesc('tp.nama')
+            ->value('rk.tahun_pelajaran_id');
+
+        return RoleView::make('siswa.form', $form);
     }
 
     public function update(Request $request, int $id): RedirectResponse
     {
         $lama = DB::table('siswa')->where('id', $id)->first();
         abort_unless($lama, 404);
+        $this->pastikanBolehDilihat($id);
 
         // Role tanpa hak ubah status: status lama dipertahankan
         if (!RoleAccess::ubahStatusSiswa()) {
@@ -204,6 +222,38 @@ class SiswaController extends Controller
         }
 
         SiswaData::save($data, $id, $foto);
+
+        // "Belum ditempatkan": simpan sebagai kelas khusus pada tahun yang dipilih,
+        // sehingga tahun pelajaran tetap tercatat.
+        if (!$request->filled('kelas_id')) {
+            $tahunBaru = (int) $request->input('tahun_pelajaran_id') ?: $this->tahunAktifId();
+            $tahunAsal = (int) $request->input('tahun_asal');
+
+            if ($tahunBaru) {
+                $statusSiswa = DB::table('siswa')->where('id', $id)->value('status_siswa');
+                // Kolom riwayat_kelas.status hanya menerima Aktif/Naik/Pindah/Lulus
+                $statusRiwayat = in_array($statusSiswa, ['Aktif', 'Naik', 'Pindah', 'Lulus'], true)
+                    ? $statusSiswa
+                    : 'Aktif';
+
+                DB::transaction(function () use ($id, $tahunBaru, $tahunAsal, $statusRiwayat, $request) {
+                    DB::table('riwayat_kelas')
+                        ->where('siswa_id', $id)
+                        ->whereIn('tahun_pelajaran_id', array_filter(array_unique([$tahunAsal, $tahunBaru])))
+                        ->delete();
+
+                    DB::table('riwayat_kelas')->insert([
+                        'siswa_id' => $id,
+                        'kelas_id' => $this->kelasBelumDitempatkan($tahunBaru),
+                        'tahun_pelajaran_id' => $tahunBaru,
+                        'status' => $statusRiwayat,
+                        'catatan' => $request->input('catatan'),
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ]);
+                });
+            }
+        }
 
         return redirect(RoleRoute::to('siswa.show', $id))
             ->with('success', 'Data siswa berhasil diperbarui.');
@@ -249,7 +299,70 @@ class SiswaController extends Controller
         return back()->with('success', $pesan);
     }
 
+    public function destroy(int $id): RedirectResponse
+    {
+        $siswa = DB::table('siswa')->where('id', $id)->whereNull('deleted_at')->first();
+        abort_unless($siswa, 404);
+
+        DB::table('siswa')->where('id', $id)->update(['deleted_at' => now()]);
+
+        return redirect(RoleRoute::to('siswa.index'))
+            ->with('success', 'Siswa "' . $siswa->nama_lengkap . '" dihapus dari daftar. Bisa dipulihkan di Siswa Terhapus.');
+    }
+
+    public function terhapus(Request $request)
+    {
+        $cari = trim((string) $request->query('q'));
+
+        $siswa = DB::table('siswa')
+            ->whereNotNull('deleted_at')
+            ->when($cari !== '', fn($q) => $q->where(function ($w) use ($cari) {
+                $w->where('nama_lengkap', 'like', "%{$cari}%")
+                    ->orWhere('nis', 'like', "%{$cari}%")
+                    ->orWhere('nisn', 'like', "%{$cari}%");
+            }))
+            ->orderByDesc('deleted_at')
+            ->paginate(15, ['id', 'nis', 'nisn', 'nama_lengkap', 'jenis_kelamin', 'status_siswa', 'deleted_at'])
+            ->withQueryString();
+
+        return RoleView::make('siswa.terhapus', ['siswa' => $siswa]);
+    }
+
+    public function restore(int $id): RedirectResponse
+    {
+        $siswa = DB::table('siswa')->where('id', $id)->whereNotNull('deleted_at')->first();
+        abort_unless($siswa, 404);
+
+        DB::table('siswa')->where('id', $id)->update(['deleted_at' => null]);
+
+        return redirect(RoleRoute::to('siswa.terhapus'))
+            ->with('success', 'Siswa "' . $siswa->nama_lengkap . '" berhasil dipulihkan.');
+    }
+
     /* ===================== HELPER ===================== */
+
+    /** Ambil (atau buat) kelas "Belum ditempatkan" untuk satu tahun pelajaran. */
+    private function kelasBelumDitempatkan(int $tahunId): int
+    {
+        $id = DB::table('kelas')
+            ->where('tahun_pelajaran_id', $tahunId)
+            ->where('nama_kelas', self::KELAS_BELUM)
+            ->value('id');
+
+        if ($id) {
+            return (int) $id;
+        }
+
+        // Sesuaikan kolom lain tabel kelas Anda jika ada yang wajib (cek DESCRIBE kelas)
+        return (int) DB::table('kelas')->insertGetId([
+            'tahun_pelajaran_id' => $tahunId,
+            'nama_kelas' => self::KELAS_BELUM,
+            'tingkat' => 0,
+            'status' => 'aktif',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
 
     /** Guru hanya boleh membuka siswa dari kelas yang ia ampu. */
     private function pastikanBolehDilihat(int $siswaId): void
@@ -285,8 +398,10 @@ class SiswaController extends Controller
             ->pluck('nama', 'id')
             ->all();
 
+        // Kelas khusus "Belum ditempatkan" tidak ditampilkan; sudah diwakili opsi kosong di form
         $kelasList = DB::table('kelas')
             ->where('status', 'aktif')
+            ->where('nama_kelas', '!=', self::KELAS_BELUM)
             ->orderBy('tingkat')->orderBy('nama_kelas')
             ->get(['id', 'nama_kelas', 'tahun_pelajaran_id']);
 

@@ -26,7 +26,6 @@
         @include('super-admin.master-pendukung.tahun-pelajaran._panel')
         @include('super-admin.master-pendukung.kelas._panel')
         @include('super-admin.master-pendukung.status-siswa._panel')
-        @include('super-admin.master-pendukung.orang-tua.orang-tua')
 
         {{-- Modal per modul --}}
         @include('super-admin.master-pendukung.tahun-pelajaran._modal')

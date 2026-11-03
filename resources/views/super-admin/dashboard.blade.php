@@ -316,11 +316,6 @@
                     <small>{{ $persenAktif }}% dari total siswa</small>
                 </div>
 
-                <div class="stat s-orange">
-                    <strong>{{ number_format($siswaBaru ?? 0, 0, ',', '.') }}</strong>
-                    <small>{{ !empty($tahunAktif) ? 'Tahun pelajaran ' . $tahunAktif->nama : 'Tahun berjalan' }}</small>
-                </div>
-
                 <div class="stat s-pink">
                     <div class="top"><span class="lbl">Baru Ditambahkan</span><span class="ico">🕒</span></div>
                     <strong>{{ number_format($jumlahSebulan, 0, ',', '.') }}</strong>
@@ -389,18 +384,6 @@
                             <span>Total</span>
                             <strong>{{ number_format($total, 0, ',', '.') }}</strong>
                         </div>
-                    </div>
-
-                    <div class="panel grow">
-                        <div class="panel-head">
-                            <h3>🔔 Notifikasi &amp; Pengingat</h3>
-                        </div>
-
-                        @forelse($pengingat->take(3) as $pesan)
-                            <div class="notice"><span>⚠️</span><span>{{ $pesan }}</span></div>
-                        @empty
-                            <div class="notice ok"><span>✅</span><span>Tidak ada pengingat. Semua data dalam kondisi baik.</span></div>
-                        @endforelse
                     </div>
                 </div>
 

@@ -24,7 +24,14 @@ class WaliKelasController extends BaseController
 
         $data = $this->validasi($request, $id);
 
-        DB::table('wali_kelas')->where('id', $id)->update($data + ['updated_at' => now()]);
+        DB::transaction(function () use ($id, $data) {
+            DB::table('wali_kelas')->where('id', $id)->update($data + ['updated_at' => now()]);
+
+            // wali yang dinonaktifkan dilepas dari semua kelas, asisten naik jadi utama
+            if ($data['status'] === 'nonaktif') {
+                $this->lepasDariKelas($id);
+            }
+        });
 
         return $this->kembali('wali-kelas', 'Wali kelas berhasil diperbarui.');
     }
@@ -33,10 +40,52 @@ class WaliKelasController extends BaseController
     {
         abort_unless(DB::table('wali_kelas')->where('id', $id)->exists(), 404);
 
-        // pivot ikut terhapus (cascade), kelas.wali_kelas_id otomatis jadi NULL
-        DB::table('wali_kelas')->where('id', $id)->delete();
+        DB::transaction(function () use ($id) {
+            // kalau dia wali utama, asisten naik dulu sebelum datanya dihapus
+            $this->lepasDariKelas($id);
+
+            // pivot ikut terhapus (cascade)
+            DB::table('wali_kelas')->where('id', $id)->delete();
+        });
 
         return $this->kembali('wali-kelas', 'Wali kelas berhasil dihapus.');
+    }
+
+    /**
+     * Lepas seorang wali dari semua kelas.
+     * Di kelas yang dia pegang sebagai UTAMA, asisten aktif pertama otomatis naik jadi utama.
+     * Kalau kelas itu tidak punya asisten aktif, kelas menjadi tanpa wali utama.
+     */
+    private function lepasDariKelas(int $waliId): void
+    {
+        $kelasIds = DB::table('kelas_wali_kelas')
+            ->where('wali_kelas_id', $waliId)
+            ->where('peran', 'utama')
+            ->pluck('kelas_id');
+
+        foreach ($kelasIds as $kelasId) {
+            $penggantiId = DB::table('kelas_wali_kelas as p')
+                ->join('wali_kelas as w', 'w.id', '=', 'p.wali_kelas_id')
+                ->where('p.kelas_id', $kelasId)
+                ->where('p.peran', 'asisten')
+                ->where('w.status', 'aktif')
+                ->where('w.id', '!=', $waliId)
+                ->orderByDesc('p.menggantikan')   // yang sedang menggantikan diutamakan
+                ->orderBy('p.wali_kelas_id')
+                ->value('p.wali_kelas_id');
+
+            if ($penggantiId) {
+                DB::table('kelas_wali_kelas')
+                    ->where('kelas_id', $kelasId)
+                    ->where('wali_kelas_id', $penggantiId)
+                    ->update(['peran' => 'utama', 'menggantikan' => 0]);
+            }
+
+            // jaga kolom kelas.wali_kelas_id tetap sama dengan wali utama (NULL jika tidak ada)
+            DB::table('kelas')->where('id', $kelasId)->update(['wali_kelas_id' => $penggantiId]);
+        }
+
+        DB::table('kelas_wali_kelas')->where('wali_kelas_id', $waliId)->delete();
     }
 
     private function validasi(Request $request, ?int $id = null): array

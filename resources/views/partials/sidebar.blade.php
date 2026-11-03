@@ -1,12 +1,12 @@
 {{--
-    Sidebar bersama untuk semua role.
-    Menu tampil/hilang otomatis mengikuti route yang dimiliki role tersebut
-    (lihat routes/web.php dan routes/role/*.php), jadi tidak perlu if per role di sini.
+Sidebar bersama untuk semua role.
+Menu tampil/hilang otomatis mengikuti route yang dimiliki role tersebut
+(lihat routes/web.php dan routes/role/*.php), jadi tidak perlu if per role di sini.
 --}}
 @php
     $p = \App\Support\RoleRoute::prefix();                         // super-admin | kepala-sekolah | ...
-    $url = fn (string $nama) => \App\Support\RoleRoute::to($nama);
-    $ada = fn (string $nama) => \App\Support\RoleRoute::has($nama);
+    $url = fn(string $nama) => \App\Support\RoleRoute::to($nama);
+    $ada = fn(string $nama) => \App\Support\RoleRoute::has($nama);
 
     $adaMaster = $ada('master-pendukung.index');
     $urlMaster = $adaMaster ? $url('master-pendukung.index') : '#';
@@ -24,8 +24,8 @@
     </div>
 
     <div class="nav-title">Menu utama</div>
-    <a class="nav-link {{ request()->routeIs($p . '.dashboard') ? 'active' : '' }}"
-        href="{{ $url('dashboard') }}">🏠 Dashboard</a>
+    <a class="nav-link {{ request()->routeIs($p . '.dashboard') ? 'active' : '' }}" href="{{ $url('dashboard') }}">🏠
+        Dashboard</a>
 
     @if($adaMaster)
         <div class="nav-title">Master Data</div>
@@ -36,7 +36,6 @@
         @if($tabStatus)
             <a class="nav-link" data-master-tab="status-siswa" href="{{ $urlMaster }}#status-siswa">📋 Status Siswa</a>
         @endif
-        <a class="nav-link" data-master-tab="orang-tua" href="{{ $urlMaster }}#orang-tua">👨‍👩‍👧 Data Orang Tua Siswa</a>
     @endif
 
     @if($ada('siswa.index'))
@@ -53,6 +52,12 @@
         @endif
     @endif
 
+    @if($ada('orang-tua.index'))
+        <div class="nav-title">Data orang tua</div>
+        <a class="nav-link {{ request()->routeIs($p . '.orang-tua.*') ? 'active' : '' }}"
+            href="{{ $url('orang-tua.index') }}">👨‍👩‍👧 Data Orang Tua Siswa</a>
+    @endif
+    
     @if($ada('laporan.index'))
         <div class="nav-title">Sistem</div>
         <a class="nav-link {{ request()->routeIs($p . '.laporan.*') ? 'active' : '' }}"
@@ -61,9 +66,9 @@
 
     {{-- Khusus Super Admin: aktifkan setelah menu Kelola User dibuat
     @if($ada('users.index'))
-        <div class="nav-title">Pengaturan</div>
-        <a class="nav-link {{ request()->routeIs($p . '.users.*') ? 'active' : '' }}"
-            href="{{ $url('users.index') }}">🔐 Kelola User &amp; Role</a>
+    <div class="nav-title">Pengaturan</div>
+    <a class="nav-link {{ request()->routeIs($p . '.users.*') ? 'active' : '' }}" href="{{ $url('users.index') }}">🔐
+        Kelola User &amp; Role</a>
     @endif
     --}}
 </aside>

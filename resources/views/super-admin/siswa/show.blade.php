@@ -22,26 +22,35 @@
             ? rtrim(rtrim(number_format((float) $d[$key], 7, ',', '.'), '0'), ',') . ' ' . $satuan
             : '-';
 
-        // Kolom Ya/Tidak (disimpan 1/0)
-        $ya = fn($key) => ($d[$key] ?? null) === null ? '-' : ((int) $d[$key] === 1 ? 'Ya' : 'Tidak');
+        // Kolom Ya/Tidak: form menyimpan "Ya"/"Tidak", data lama bisa 1/0
+        $ya = function ($key) use ($d) {
+            $x = $d[$key] ?? null;
+            if ($x === null || $x === '') {
+                return '-';
+            }
+            return in_array(strtolower((string) $x), ['1', 'ya'], true) ? 'Ya' : 'Tidak';
+        };
 
         // Apakah salah satu kolom pada kelompok ini terisi?
         $ada_ = fn(array $keys) => collect($keys)->contains(fn($k) => filled($d[$k] ?? null));
 
-        $adaWali = $ada_(['nama_wali', 'tahun_lahir_wali', 'pendidikan_wali', 'nik_wali', 'pekerjaan_wali', 'penghasilan_wali']);
+        $adaWali = $ada_(['wali_nama', 'wali_nik', 'wali_tahun_lahir', 'wali_jenjang_pendidikan', 'wali_pekerjaan', 'wali_penghasilan']);
         $adaBantuan = $ada_([
             'penerima_kps',
             'no_kps',
             'penerima_kip',
-            'no_kip',
+            'nomor_kip',
             'nama_di_kip',
-            'no_kks',
+            'nomor_kks',
             'layak_pip',
             'alasan_layak_pip',
             'bank',
-            'no_rekening',
-            'rekening_atas_nama'
+            'nomor_rekening_bank',
+            'rekening_atas_nama',
         ]);
+
+        $jk = ($d['jenis_kelamin'] ?? '') === 'L' ? 'Laki-laki' : (($d['jenis_kelamin'] ?? '') === 'P' ? 'Perempuan' : '-');
+        $kelasIni = $riwayat->first();
 
         $rtrw = collect([$d['rt'] ?? null, $d['rw'] ?? null]);
         $rtrwTeks = $rtrw->filter()->isEmpty() ? '-' : 'RT ' . ($d['rt'] ?? '-') . ' / RW ' . ($d['rw'] ?? '-');
@@ -49,7 +58,8 @@
             ? rtrim(rtrim((string) $d['lintang'], '0'), '.') . ', ' . rtrim(rtrim((string) $d['bujur'], '0'), '.')
             : '-';
 
-        $urlExport = route('super-admin.siswa.export', $d['id']);
+        $bisaExport = $ada('siswa.export');
+        $urlExport = $bisaExport ? $to('siswa.export', $d['id']) : '#';
 
         // Tombol di kepala tiap bagian: Edit + Excel + PDF (khusus bagian itu saja)
         $tools = function (string $key, string $nama, bool $bisaEdit = true) use ($urlExport, $ada, $to, $d) {
@@ -123,7 +133,7 @@
             padding: 1px 6px;
         }
 
-        /* Tombol utama di header: hanya 3-4 tombol */
+        /* Tombol utama di header */
         .profile-head .btn-row {
             display: flex;
             flex-wrap: wrap;
@@ -133,7 +143,7 @@
         }
 
         .profile-head .btn-row .btn,
-        .export-menu > summary {
+        .export-menu>summary {
             font-size: 12.5px;
             padding: 6px 12px;
             line-height: 1.2;
@@ -144,7 +154,7 @@
             position: relative;
         }
 
-        .export-menu > summary {
+        .export-menu>summary {
             list-style: none;
             cursor: pointer;
             border: 1px solid var(--primary, #2563eb);
@@ -155,11 +165,11 @@
             user-select: none;
         }
 
-        .export-menu > summary::-webkit-details-marker {
+        .export-menu>summary::-webkit-details-marker {
             display: none;
         }
 
-        .export-menu[open] > summary {
+        .export-menu[open]>summary {
             filter: brightness(.92);
         }
 
@@ -454,7 +464,7 @@
         }
     </style>
 
-    {{-- ===== Header: profil + 3-4 tombol utama ===== --}}
+    {{-- ===== Header: profil + tombol utama ===== --}}
     <div class="panel panel-profile">
         <div class="panel-head profile-head">
             <div class="profile">
@@ -465,7 +475,7 @@
                 @endif
                 <div>
                     <h3>{{ $d['nama_lengkap'] }}</h3>
-                    <p class="muted">NIPD {{ $v('nis') }} &nbsp;|&nbsp; NISN {{ $v('nisn') }}</p>
+                    <p class="muted">NIS {{ $v('nis') }} &nbsp;|&nbsp; NISN {{ $v('nisn') }}</p>
                     <span class="badge {{ $badge[$d['status_siswa']] ?? 'badge-gray' }}">{{ $d['status_siswa'] }}</span>
                 </div>
             </div>
@@ -488,8 +498,8 @@
 
                         <div class="export-actions">
                             <a class="btn btn-light" id="exp-xlsx" href="{{ $urlExport }}">⬇ Excel</a>
-                            <a class="btn btn-light" id="exp-pdf" target="_blank"
-                                href="{{ $urlExport }}?format=pdf">⬇ PDF</a>
+                            <a class="btn btn-light" id="exp-pdf" target="_blank" href="{{ $urlExport }}?format=pdf">⬇
+                                PDF</a>
                         </div>
                     </div>
                 </details>
@@ -520,6 +530,7 @@
 
     <div id="pager-body">
 
+        {{-- ===== 1. Biodata ===== --}}
         <div class="panel tab-pane" data-key="biodata" data-icon="👤" data-title="Biodata"
             data-desc="Identitas dan data diri">
             <div class="panel-head">
@@ -527,33 +538,48 @@
                 {!! $tools('biodata', 'Biodata') !!}
             </div>
             <dl class="info">
+                <dt>NIS</dt>
+                <dd>{{ $v('nis') }}</dd>
+                <dt>NISN</dt>
+                <dd>{{ $v('nisn') }}</dd>
+                <dt>Nama lengkap</dt>
+                <dd>{{ $v('nama_lengkap') }}</dd>
                 <dt>Jenis kelamin</dt>
-                <dd>{{ ($d['jenis_kelamin'] ?? '') === 'L' ? 'Laki-laki' : 'Perempuan' }}</dd>
-                <dt>NIK</dt>
-                <dd>{{ $v('nik') }}</dd>
-                <dt>No. KK</dt>
-                <dd>{{ $v('no_kk') }}</dd>
+                <dd>{{ $jk }}</dd>
+                <dt>Status siswa</dt>
+                <dd>{{ $v('status_siswa') }}</dd>
                 <dt>Tempat lahir</dt>
                 <dd>{{ $v('tempat_lahir') }}</dd>
                 <dt>Tanggal lahir</dt>
                 <dd>{{ $tgl($d['tanggal_lahir'] ?? null) }}</dd>
+                <dt>NIK</dt>
+                <dd>{{ $v('nik') }}</dd>
+                <dt>No. KK</dt>
+                <dd>{{ $v('no_kk') }}</dd>
                 <dt>Agama</dt>
                 <dd>{{ $v('agama') }}</dd>
                 <dt>No. registrasi akta lahir</dt>
-                <dd>{{ $v('no_akta_lahir') }}</dd>
+                <dd>{{ $v('no_registrasi_akta_lahir') }}</dd>
                 <dt>Anak ke-</dt>
                 <dd>{{ $v('anak_ke') }}</dd>
                 <dt>Jumlah saudara kandung</dt>
-                <dd>{{ $v('jumlah_saudara') }}</dd>
+                <dd>{{ $v('jumlah_saudara_kandung') }}</dd>
                 <dt>Kebutuhan khusus</dt>
                 <dd>{{ $v('kebutuhan_khusus') }}</dd>
                 <dt>Asal sekolah</dt>
                 <dd>{{ $v('asal_sekolah') }}</dd>
                 <dt>Tanggal masuk</dt>
                 <dd>{{ $tgl($d['tanggal_masuk'] ?? null) }}</dd>
+                <dt>Tahun pelajaran</dt>
+                <dd>{{ $kelasIni->tahun_pelajaran ?? '-' }}</dd>
+                <dt>Kelas</dt>
+                <dd>{{ $kelasIni->nama_kelas ?? 'Belum ditempatkan di kelas' }}</dd>
+                <dt>Catatan kelas</dt>
+                <dd>{{ ($kelasIni->catatan ?? null) ?: '-' }}</dd>
             </dl>
         </div>
 
+        {{-- ===== 2. Fisik & Dokumen ===== --}}
         <div class="panel tab-pane" data-key="fisik" data-icon="📏" data-title="Fisik &amp; Dokumen"
             data-desc="Berat, tinggi, ijazah">
             <div class="panel-head">
@@ -576,6 +602,7 @@
             </dl>
         </div>
 
+        {{-- ===== 3. Ayah ===== --}}
         <div class="panel tab-pane" data-key="ayah" data-icon="👨" data-title="Ayah" data-desc="Data ayah siswa">
             <div class="panel-head">
                 <h3>Ayah</h3>
@@ -585,11 +612,11 @@
                 <dt>Nama</dt>
                 <dd>{{ $v('nama_ayah') }}</dd>
                 <dt>NIK</dt>
-                <dd>{{ $v('nik_ayah') }}</dd>
+                <dd>{{ $v('ayah_nik') }}</dd>
                 <dt>Tahun lahir</dt>
-                <dd>{{ $v('tahun_lahir_ayah') }}</dd>
-                <dt>Pendidikan</dt>
-                <dd>{{ $v('pendidikan_ayah') }}</dd>
+                <dd>{{ $v('ayah_tahun_lahir') }}</dd>
+                <dt>Jenjang pendidikan</dt>
+                <dd>{{ $v('ayah_jenjang_pendidikan') }}</dd>
                 <dt>Pekerjaan</dt>
                 <dd>{{ $v('pekerjaan_ayah') }}</dd>
                 <dt>Penghasilan</dt>
@@ -597,6 +624,7 @@
             </dl>
         </div>
 
+        {{-- ===== 4. Ibu ===== --}}
         <div class="panel tab-pane" data-key="ibu" data-icon="👩" data-title="Ibu" data-desc="Data ibu siswa">
             <div class="panel-head">
                 <h3>Ibu</h3>
@@ -606,11 +634,11 @@
                 <dt>Nama</dt>
                 <dd>{{ $v('nama_ibu') }}</dd>
                 <dt>NIK</dt>
-                <dd>{{ $v('nik_ibu') }}</dd>
+                <dd>{{ $v('ibu_nik') }}</dd>
                 <dt>Tahun lahir</dt>
-                <dd>{{ $v('tahun_lahir_ibu') }}</dd>
-                <dt>Pendidikan</dt>
-                <dd>{{ $v('pendidikan_ibu') }}</dd>
+                <dd>{{ $v('ibu_tahun_lahir') }}</dd>
+                <dt>Jenjang pendidikan</dt>
+                <dd>{{ $v('ibu_jenjang_pendidikan') }}</dd>
                 <dt>Pekerjaan</dt>
                 <dd>{{ $v('pekerjaan_ibu') }}</dd>
                 <dt>Penghasilan</dt>
@@ -618,6 +646,7 @@
             </dl>
         </div>
 
+        {{-- ===== 5. Wali ===== --}}
         @if($adaWali)
             <div class="panel tab-pane" data-key="wali" data-icon="🧑‍🤝‍🧑" data-title="Wali" data-desc="Data wali siswa">
                 <div class="panel-head">
@@ -626,21 +655,22 @@
                 </div>
                 <dl class="info">
                     <dt>Nama</dt>
-                    <dd>{{ $v('nama_wali') }}</dd>
+                    <dd>{{ $v('wali_nama') }}</dd>
                     <dt>NIK</dt>
-                    <dd>{{ $v('nik_wali') }}</dd>
+                    <dd>{{ $v('wali_nik') }}</dd>
                     <dt>Tahun lahir</dt>
-                    <dd>{{ $v('tahun_lahir_wali') }}</dd>
-                    <dt>Pendidikan</dt>
-                    <dd>{{ $v('pendidikan_wali') }}</dd>
+                    <dd>{{ $v('wali_tahun_lahir') }}</dd>
+                    <dt>Jenjang pendidikan</dt>
+                    <dd>{{ $v('wali_jenjang_pendidikan') }}</dd>
                     <dt>Pekerjaan</dt>
-                    <dd>{{ $v('pekerjaan_wali') }}</dd>
+                    <dd>{{ $v('wali_pekerjaan') }}</dd>
                     <dt>Penghasilan</dt>
-                    <dd>{{ $v('penghasilan_wali') }}</dd>
+                    <dd>{{ $v('wali_penghasilan') }}</dd>
                 </dl>
             </div>
         @endif
 
+        {{-- ===== 6. Alamat ===== --}}
         <div class="panel tab-pane" data-key="alamat" data-icon="🏠" data-title="Alamat" data-desc="Alamat dan lokasi">
             <div class="panel-head">
                 <h3>Alamat</h3>
@@ -667,13 +697,14 @@
                 <dd>{{ $v('jenis_tinggal') }}</dd>
                 <dt>Alat transportasi</dt>
                 <dd>{{ $v('alat_transportasi') }}</dd>
-                <dt>Jarak ke sekolah</dt>
-                <dd>{{ $unit('jarak_ke_sekolah', 'km') }}</dd>
+                <dt>Jarak rumah ke sekolah</dt>
+                <dd>{{ $unit('jarak_rumah_ke_sekolah', 'km') }}</dd>
                 <dt>Koordinat (lintang, bujur)</dt>
                 <dd>{{ $koordinat }}</dd>
             </dl>
         </div>
 
+        {{-- ===== 7. Kontak ===== --}}
         <div class="panel tab-pane" data-key="kontak" data-icon="📞" data-title="Kontak" data-desc="Telepon dan email">
             <div class="panel-head">
                 <h3>Kontak</h3>
@@ -682,13 +713,22 @@
             <dl class="info">
                 <dt>Telepon rumah</dt>
                 <dd>{{ $v('telepon_rumah') }}</dd>
-                <dt>No. HP siswa</dt>
-                <dd>{{ $v('no_hp_siswa') }}</dd>
+                <dt>HP siswa</dt>
+                <dd>{{ $v('hp') }}</dd>
                 <dt>Email siswa</dt>
                 <dd>{{ $v('email_siswa') }}</dd>
+                <dt>No. HP ayah</dt>
+                <dd>{{ $v('no_hp_ayah') }}</dd>
+                <dt>Email ayah</dt>
+                <dd>{{ $v('email_ayah') }}</dd>
+                <dt>No. HP ibu</dt>
+                <dd>{{ $v('no_hp_ibu') }}</dd>
+                <dt>Email ibu</dt>
+                <dd>{{ $v('email_ibu') }}</dd>
             </dl>
         </div>
 
+        {{-- ===== 8. Bantuan & Rekening ===== --}}
         @if($adaBantuan)
             <div class="panel tab-pane" data-key="bantuan" data-icon="💳" data-title="Bantuan &amp; Rekening"
                 data-desc="KPS, KIP, PIP, rekening">
@@ -704,25 +744,26 @@
                     <dt>Penerima KIP</dt>
                     <dd>{{ $ya('penerima_kip') }}</dd>
                     <dt>Nomor KIP</dt>
-                    <dd>{{ $v('no_kip') }}</dd>
+                    <dd>{{ $v('nomor_kip') }}</dd>
                     <dt>Nama di KIP</dt>
                     <dd>{{ $v('nama_di_kip') }}</dd>
                     <dt>Nomor KKS</dt>
-                    <dd>{{ $v('no_kks') }}</dd>
-                    <dt>Layak PIP</dt>
+                    <dd>{{ $v('nomor_kks') }}</dd>
+                    <dt>Layak PIP (usulan sekolah)</dt>
                     <dd>{{ $ya('layak_pip') }}</dd>
                     <dt>Alasan layak PIP</dt>
                     <dd>{{ $v('alasan_layak_pip') }}</dd>
                     <dt>Bank</dt>
                     <dd>{{ $v('bank') }}</dd>
-                    <dt>Nomor rekening</dt>
-                    <dd>{{ $v('no_rekening') }}</dd>
+                    <dt>Nomor rekening bank</dt>
+                    <dd>{{ $v('nomor_rekening_bank') }}</dd>
                     <dt>Rekening atas nama</dt>
                     <dd>{{ $v('rekening_atas_nama') }}</dd>
                 </dl>
             </div>
         @endif
 
+        {{-- ===== 9. Riwayat Kelas ===== --}}
         <div class="panel tab-pane" data-key="riwayat" data-icon="🏫" data-title="Riwayat Kelas"
             data-desc="Kelas tiap tahun pelajaran">
             <div class="panel-head">

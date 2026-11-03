@@ -6,7 +6,7 @@
 
     $kelasTerpilih = old('kelas_id', $data['kelas_id'] ?? null);
     $tahunTerpilih = optional($kelasList->firstWhere('id', $kelasTerpilih))->tahun_pelajaran_id
-        ?? $tahunAktifId;
+    ?? ($data['tahun_pelajaran_id'] ?? $tahunAktifId);
 
     /* Opsi pilihan mengikuti isian standar Dapodik */
     $opt = fn(array $a) => array_combine($a, $a);
@@ -161,6 +161,9 @@
         @if($edit) @method('PUT') @endif
 
         <input type="hidden" name="bagian" id="bagian-aktif" value="">
+        @if($edit)
+            <input type="hidden" name="tahun_asal" value="{{ $tahunTerpilih }}">
+        @endif
 
         <div class="tabs-wrap" id="tabs-wrap">
             <button type="button" class="tabs-arrow" id="tabs-left" aria-label="Geser ke kiri">&lsaquo;</button>
@@ -201,7 +204,7 @@
                     {{-- Kelas --}}
                     <div class="field">
                         <label for="f-tahun">Tahun pelajaran</label>
-                        <select id="f-tahun">
+                        <select id="f-tahun" name="tahun_pelajaran_id">
                             @foreach($tahunOptions as $tid => $tnama)
                                 <option value="{{ $tid }}" {{ (string) $tahunTerpilih === (string) $tid ? 'selected' : '' }}>
                                     {{ $tnama }}
