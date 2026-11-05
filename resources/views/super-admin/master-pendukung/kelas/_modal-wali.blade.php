@@ -4,7 +4,7 @@
         ?? \Illuminate\Support\Facades\DB::table('wali_kelas')
             ->where('status', 'aktif')
             ->orderBy('nama')
-            ->get(['id', 'nama']);
+            ->get(['id', 'nama', 'jenis_kelamin']);
 @endphp
 
 <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.default.min.css" rel="stylesheet">
@@ -23,13 +23,21 @@
 
         <div class="modal-body">
 
+            {{-- Keterangan warna --}}
+            <div class="jk-legend">
+                <span><i class="wk-avatar jk-l">L</i> Laki-laki</span>
+                <span><i class="wk-avatar jk-p">P</i> Perempuan</span>
+                <span><i class="wk-avatar jk-x">?</i> Belum diisi</span>
+            </div>
+
             {{-- Wali kelas utama --}}
             <div class="field">
                 <label for="wk-utama">Wali kelas utama</label>
                 <select id="wk-utama" name="wali_utama_id">
                     <option value=""></option>
                     @foreach($waliKelasList as $wali)
-                        <option value="{{ $wali->id }}">{{ $wali->nama }}</option>
+                        <option value="{{ $wali->id }}"
+                                data-data="{{ json_encode(['jk' => $wali->jenis_kelamin]) }}">{{ $wali->nama }}</option>
                     @endforeach
                 </select>
                 @error('wali_utama_id')
@@ -44,7 +52,8 @@
                     <select id="wk-asisten-1" name="asisten_ids[]">
                         <option value=""></option>
                         @foreach($waliKelasList as $wali)
-                            <option value="{{ $wali->id }}">{{ $wali->nama }}</option>
+                            <option value="{{ $wali->id }}"
+                                    data-data="{{ json_encode(['jk' => $wali->jenis_kelamin]) }}">{{ $wali->nama }}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn-promote" data-ganti="asisten1"
@@ -59,7 +68,8 @@
                     <select id="wk-asisten-2" name="asisten_ids[]">
                         <option value=""></option>
                         @foreach($waliKelasList as $wali)
-                            <option value="{{ $wali->id }}">{{ $wali->nama }}</option>
+                            <option value="{{ $wali->id }}"
+                                    data-data="{{ json_encode(['jk' => $wali->jenis_kelamin]) }}">{{ $wali->nama }}</option>
                         @endforeach
                     </select>
                     <button type="button" class="btn-promote" data-ganti="asisten2"
@@ -116,6 +126,26 @@
     #modal-wali .field label { display: block; margin-bottom: .4rem; font-weight: 600; }
     #modal-wali .field-hint  { display: block; margin-top: .25rem; color: #6b7280; line-height: 1.45; }
     #modal-wali .field-error { display: block; margin-top: .4rem; color: #dc2626; }
+
+    /* ===== Lingkaran jenis kelamin ===== */
+    #modal-wali .wk-avatar {
+        display: inline-flex; align-items: center; justify-content: center;
+        flex: 0 0 auto; width: 22px; height: 22px; border-radius: 50%;
+        font-size: .7rem; font-weight: 700; font-style: normal; color: #fff;
+    }
+    #modal-wali .jk-l { background: #2563eb; }   /* laki-laki: biru */
+    #modal-wali .jk-p { background: #ec4899; }   /* perempuan: pink */
+    #modal-wali .jk-x { background: #9ca3af; }   /* belum diisi: abu-abu */
+
+    #modal-wali .wk-opt { display: flex; align-items: center; gap: .5rem; }
+
+    #modal-wali .jk-legend {
+        display: flex; flex-wrap: wrap; gap: .5rem 1rem; margin-bottom: 1rem;
+        padding: .55rem .8rem; font-size: .85rem; color: #4b5563;
+        background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
+    }
+    #modal-wali .jk-legend span { display: inline-flex; align-items: center; gap: .4rem; }
+    #modal-wali .jk-legend .wk-avatar { width: 18px; height: 18px; font-size: .6rem; }
 
     /* ===== Baris asisten: select + tombol ===== */
     #modal-wali .role-row { display: flex; align-items: center; gap: .5rem; }
@@ -174,6 +204,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const hidden = document.getElementById('wk-pengganti');
     const info   = document.getElementById('wk-ganti-info');
 
+    // warna lingkaran menurut jenis kelamin
+    const kelasJk = jk => (jk === 'L' ? 'jk-l' : jk === 'P' ? 'jk-p' : 'jk-x');
+
+    const tampil = (d, esc) =>
+        `<span class="wk-opt"><i class="wk-avatar ${kelasJk(d.jk)}">${esc((d.text || '?').trim().charAt(0).toUpperCase())}</i>` +
+        `<span>${esc(d.text)}</span></span>`;
+
     const base = {
         plugins: ['clear_button'],
         maxItems: 1,
@@ -182,7 +219,8 @@ document.addEventListener('DOMContentLoaded', () => {
         render: {
             no_results: () => '<div class="no-results">Wali kelas tidak ditemukan</div>',
             option: (d, esc) =>
-                `<div class="${d.disabled ? 'is-taken' : ''}">${esc(d.text)}${d.disabled ? ' <small>(sudah dipilih)</small>' : ''}</div>`
+                `<div class="${d.disabled ? 'is-taken' : ''}">${tampil(d, esc)}${d.disabled ? ' <small>(sudah dipilih)</small>' : ''}</div>`,
+            item: (d, esc) => `<div>${tampil(d, esc)}</div>`
         }
     };
 

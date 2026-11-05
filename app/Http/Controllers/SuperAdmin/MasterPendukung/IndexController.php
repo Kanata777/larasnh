@@ -73,17 +73,22 @@ class IndexController extends BaseController
             ->get();
     }
 
+    /**
+     * Daftar wali kelas aktif untuk dropdown di modal "Atur Wali Kelas".
+     * jenis_kelamin (L/P) dipakai untuk warna lingkaran: biru = laki-laki, pink = perempuan.
+     */
     private function daftarWaliKelas()
     {
         return DB::table('wali_kelas')
             ->where('status', 'aktif')
             ->orderBy('nama')
-            ->get(['id', 'nama']);
+            ->get(['id', 'nama', 'jenis_kelamin']);
     }
 
     /**
      * Wali per kelas, dikelompokkan menurut kelas_id.
      * Kolom `peran` (utama / asisten) dan `menggantikan` ikut diambil, utama diurutkan lebih dulu.
+     * jenis_kelamin ikut diambil agar daftar wali per kelas juga bisa diberi warna.
      */
     private function daftarWaliPerKelas()
     {
@@ -91,7 +96,7 @@ class IndexController extends BaseController
             ->join('wali_kelas as w', 'w.id', '=', 'kw.wali_kelas_id')
             ->orderByRaw("kw.peran = 'utama' DESC")
             ->orderBy('w.nama')
-            ->get(['kw.kelas_id', 'w.id', 'w.nama', 'kw.peran', 'kw.menggantikan'])
+            ->get(['kw.kelas_id', 'w.id', 'w.nama', 'w.jenis_kelamin', 'kw.peran', 'kw.menggantikan'])
             ->groupBy('kelas_id');
     }
 

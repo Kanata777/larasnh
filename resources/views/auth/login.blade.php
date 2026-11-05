@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Sistem Data Siswa</title>
+    <title>Login LARAS</title>
 
     <style>
         * {
@@ -14,174 +13,144 @@
             padding: 0;
         }
 
+        html,
         body {
-            font-family: Arial, sans-serif;
+            width: 100%;
             min-height: 100vh;
-            background: linear-gradient(135deg, #e8f3ff, #f4f7fb);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px;
-            color: #183153;
+            min-height: 100dvh;
         }
 
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #ffffff;
+            color: #333333;
+        }
+
+        /* ===== Layout full layar (mengikuti rasio perangkat) ===== */
         .container {
-            width: 100%;
-            max-width: 980px;
-            min-height: 560px;
+            width: 100vw;
+            height: 100vh;
+            height: 100dvh;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            background: white;
-            border-radius: 22px;
-            overflow: hidden;
-            box-shadow: 0 18px 55px rgba(26, 69, 120, .13);
+            background: #ffffff;
         }
 
+        /* ===== Panel kiri ===== */
         .left-panel {
-            background: linear-gradient(150deg, #0755a5, #0c82ce);
-            color: white;
-            padding: 45px 36px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg,
+                    #ebebe7 0%,
+                    #c3d0dc 25%,
+                    #86a9cd 48%,
+                    #2a6fb7 70%,
+                    #1f69b3 100%);
+        }
+
+        /* Logo LARAS: posisinya "melayang" (absolute), jadi mengubah ukurannya
+           TIDAK menggeser atau mengecilkan foto di bawahnya.
+           Ubah angka width untuk memperbesar / memperkecil. */
+        .laras-logo {
+            position: absolute;
+            top: -3vh;
+            left: 50%;
+            transform: translateX(-50%);
+            width: min(84%, 52vh);
+            height: auto;
+            z-index: 1;
+        }
+
+        /* Foto: menempel di bawah, tingginya tidak bergantung pada logo */
+        .kids-image {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 54vh;
+            object-fit: cover;
+            object-position: center top;
+            display: block;
+            z-index: 2;
+        }
+
+        /* ===== Panel kanan ===== */
+        .right-panel {
+            background: #ffffff;
+            height: 100%;
+            padding: 6vh 5% 3vh;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            align-items: center;
+            overflow-y: auto;
         }
 
-        .brand {
+        .school-logo {
+            width: min(90%, 620px);
+            max-height: 24vh;
+            object-fit: contain;
+            height: auto;
+        }
+
+        .login-area {
+            width: 100%;
+            flex: 1;
             display: flex;
             align-items: center;
-            gap: 12px;
-            margin-bottom: 42px;
-        }
-
-        .brand-icon {
-            width: 54px;
-            height: 54px;
-            border-radius: 14px;
-            display: grid;
-            place-items: center;
-            background: rgba(255, 255, 255, .17);
-            font-size: 29px;
-        }
-
-        .brand h2 {
-            font-size: 20px;
-            line-height: 1.4;
-        }
-
-        .brand p {
-            font-size: 12px;
-            opacity: .8;
-            margin-top: 4px;
-        }
-
-        .illustration {
-            font-size: 95px;
-            text-align: center;
-            margin: 8px 0 24px;
-        }
-
-        .left-panel h1 {
-            font-size: 28px;
-            line-height: 1.35;
-            margin-bottom: 14px;
-        }
-
-        .left-panel > p {
-            font-size: 14px;
-            line-height: 1.8;
-            color: #e0efff;
-        }
-
-        .features {
-            list-style: none;
-            margin-top: 28px;
-        }
-
-        .features li {
-            margin: 13px 0;
-            font-size: 13px;
-        }
-
-        .right-panel {
-            padding: 46px 40px;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
         }
 
-        .right-panel h2 {
-            font-size: 27px;
-            margin-bottom: 9px;
-            color: #16365c;
+        .login-box {
+            width: 100%;
+            max-width: 640px;
+            padding: 0 6%;
         }
 
-        .subtitle {
-            color: #7b8ca3;
-            font-size: 13px;
-            line-height: 1.7;
-            margin-bottom: 28px;
+        .login-box h2 {
+            text-align: center;
+            font-size: clamp(28px, 4.2vh, 44px);
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: clamp(20px, 4vh, 44px);
         }
 
         .form-group {
-            margin-bottom: 19px;
+            margin-bottom: clamp(10px, 1.6vh, 18px);
         }
 
         label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 13px;
-            color: #344a65;
+            margin-bottom: 6px;
+            font-size: clamp(13px, 1.8vh, 17px);
+            color: #333333;
         }
 
         input {
             width: 100%;
-            padding: 13px 14px;
-            border: 1px solid #dbe4ef;
+            height: clamp(46px, 6.6vh, 68px);
+            padding: 0 16px;
+            border: 2px solid #dcdcdc;
             border-radius: 10px;
-            font-size: 14px;
+            font-size: 16px;
             outline: none;
-            background: #fbfdff;
-            color: #243b53;
+            background: #ffffff;
+            color: #333333;
         }
 
         input:focus {
-            border-color: #1675ce;
-            box-shadow: 0 0 0 3px rgba(22, 117, 206, .1);
-        }
-
-        .password-wrap {
-            position: relative;
-        }
-
-        .password-wrap input {
-            padding-right: 90px;
-        }
-
-        .toggle-password {
-            position: absolute;
-            right: 12px;
-            top: 50%;
-            transform: translateY(-50%);
-            border: none;
-            background: none;
-            color: #1265ae;
-            cursor: pointer;
-            font-size: 12px;
+            border-color: #0868ba;
         }
 
         .login-btn {
             width: 100%;
+            height: clamp(46px, 6.4vh, 66px);
+            margin-top: clamp(24px, 6vh, 64px);
             border: none;
-            border-radius: 10px;
-            padding: 14px;
+            border-radius: 8px;
             background: #0868ba;
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
+            color: #ffffff;
+            font-size: clamp(18px, 2.8vh, 26px);
             cursor: pointer;
-            margin-top: 7px;
-            transition: .2s;
         }
 
         .login-btn:hover {
@@ -189,10 +158,10 @@
         }
 
         .alert {
-            padding: 12px;
-            border-radius: 9px;
+            padding: 10px 12px;
+            border-radius: 8px;
             font-size: 13px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             line-height: 1.6;
         }
 
@@ -210,44 +179,54 @@
 
         .footer {
             text-align: center;
-            font-size: 11px;
-            color: #93a1b3;
-            margin-top: 26px;
-            line-height: 1.8;
+            font-size: clamp(12px, 1.7vh, 16px);
+            color: #333333;
+            padding-top: 12px;
         }
 
-        @media (max-width: 700px) {
-            body {
-                padding: 14px;
-            }
-
+        /* ===== Layar potret (HP / tablet berdiri): susun atas-bawah ===== */
+        @media (max-aspect-ratio: 1/1) {
             .container {
                 grid-template-columns: 1fr;
+                grid-template-rows: 42% 58%;
             }
 
-            .left-panel {
-                padding: 25px;
+            .laras-logo {
+                top: -1vh;
+                width: min(66%, 23vh);
             }
 
-            .brand {
-                margin-bottom: 18px;
-            }
-
-            .illustration {
-                font-size: 58px;
-                margin: 5px 0 15px;
-            }
-
-            .left-panel h1 {
-                font-size: 23px;
-            }
-
-            .features {
-                margin-top: 12px;
+            .kids-image {
+                height: 22vh;
             }
 
             .right-panel {
-                padding: 30px 24px;
+                padding: 3vh 6% 2vh;
+            }
+
+            .school-logo {
+                max-height: 12vh;
+            }
+
+            .login-box {
+                padding: 0;
+            }
+        }
+
+        /* Layar sangat pendek (HP landscape): izinkan scroll */
+        @media (max-height: 480px) {
+            .container {
+                height: auto;
+                min-height: 100vh;
+            }
+
+            .left-panel {
+                min-height: 100vh;
+            }
+
+            .right-panel {
+                height: auto;
+                min-height: 100vh;
             }
         }
     </style>
@@ -257,135 +236,90 @@
 
     <div class="container">
 
-        <!-- Panel informasi -->
+        <!-- Panel kiri: logo LARAS + foto -->
         <section class="left-panel">
 
-            <div class="brand">
-                <div class="brand-icon">🎓</div>
+            <img
+                src="{{ asset('images/Laras.png') }}"
+                alt="LARAS - Layanan Adminsitrasi Rekam Akademik Sekolah"
+                class="laras-logo"
+            >
 
-                <div>
-                    <h2>SISTEM DATA SISWA</h2>
-                    <p>Administrasi Sekolah Terintegrasi</p>
-                </div>
-            </div>
-
-            <div class="illustration">🖥️</div>
-
-            <h1>Selamat Datang di Sistem Informasi Sekolah</h1>
-
-            <p>
-                Kelola data siswa dengan lebih mudah, aman,
-                dan terorganisir melalui satu sistem terpadu.
-            </p>
-
-            <ul class="features">
-                <li>✓ Akses sesuai hak pengguna</li>
-                <li>✓ Data tersimpan dalam database</li>
-                <li>✓ Pengelolaan administrasi sekolah</li>
-                <li>✓ Sistem login yang aman</li>
-            </ul>
+            <img
+                src="{{ asset('images/anak.png') }}"
+                alt=""
+                class="kids-image"
+            >
 
         </section>
 
-        <!-- Panel login -->
+        <!-- Panel kanan: logo sekolah + form login -->
         <section class="right-panel">
 
-            <h2>Login Sistem</h2>
+            <img
+                src="{{ asset('images/LOGO SDIT.png') }}"
+                alt="SDIT Nur Hidayah Surakarta"
+                class="school-logo"
+            >
 
-            <p class="subtitle">
-                Silakan masuk menggunakan email dan password
-                akun yang sudah terdaftar pada sistem.
-            </p>
+            <div class="login-area">
+                <div class="login-box">
 
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
+                    <h2>Login</h2>
+
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-error">
+                            @foreach ($errors->all() as $error)
+                                <div>{{ $error }}</div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    <form method="POST" action="{{ route('login.process') }}">
+                        @csrf
+
+                        <div class="form-group">
+                            <label for="email">Email Pengguna</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                value="{{ old('email') }}"
+                                autocomplete="username"
+                                required
+                                autofocus
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                autocomplete="current-password"
+                                required
+                            >
+                        </div>
+
+                        <button type="submit" class="login-btn">Masuk</button>
+                    </form>
+
                 </div>
-            @endif
-
-            @if ($errors->any())
-                <div class="alert alert-error">
-                    @foreach ($errors->all() as $error)
-                        <div>{{ $error }}</div>
-                    @endforeach
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('login.process') }}">
-                @csrf
-
-                <!-- Email -->
-                <div class="form-group">
-                    <label for="email">Email Pengguna</label>
-
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value="{{ old('email') }}"
-                        placeholder="Masukkan email"
-                        autocomplete="username"
-                        required
-                        autofocus
-                    >
-                </div>
-
-                <!-- Password -->
-                <div class="form-group">
-                    <label for="password">Password</label>
-
-                    <div class="password-wrap">
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Masukkan password"
-                            autocomplete="current-password"
-                            required
-                        >
-
-                        <button
-                            type="button"
-                            class="toggle-password"
-                            onclick="togglePassword()"
-                        >
-                            Lihat
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Tombol login -->
-                <button type="submit" class="login-btn">
-                    Masuk ke Sistem →
-                </button>
-
-            </form>
-
-            <div class="footer">
-                Sistem Informasi Data Siswa &copy; {{ date('Y') }}
-                <br>
-                Akses hanya untuk pengguna yang berwenang.
             </div>
+
+            <div class="footer">PUSKOMDATIN{{ date('Y') }}</div>
 
         </section>
 
     </div>
 
-    <script>
-        // Menampilkan atau menyembunyikan password
-        function togglePassword() {
-            const password = document.getElementById('password');
-            const button = document.querySelector('.toggle-password');
-
-            if (password.type === 'password') {
-                password.type = 'text';
-                button.textContent = 'Sembunyikan';
-            } else {
-                password.type = 'password';
-                button.textContent = 'Lihat';
-            }
-        }
-    </script>
-
 </body>
+
 </html>

@@ -13,6 +13,9 @@
         ->take(2)
         ->map(fn ($kata) => mb_strtoupper(mb_substr($kata, 0, 1)))
         ->implode('');
+
+    // Warna avatar menurut jenis kelamin: L = biru, P = pink, lainnya = abu-abu
+    $kelasJk = fn ($jk) => $jk === 'L' ? 'jk-l' : ($jk === 'P' ? 'jk-p' : 'jk-x');
 @endphp
 
 <div class="tab-panel" id="tab-kelas">
@@ -39,9 +42,18 @@
 
         {{-- Keterangan warna wali kelas --}}
         <div class="wali-legend">
-            <span class="wali-legend-item"><i class="dot dot-utama"></i> Wali kelas utama</span>
-            <span class="wali-legend-item"><i class="dot dot-wakil"></i> Wakil wali kelas</span>
-            <span class="wali-legend-item"><i class="dot dot-pengganti"></i> Menggantikan sementara</span>
+            <div class="wali-legend-group">
+                <strong>Lingkaran:</strong>
+                <span class="wali-legend-item"><i class="dot dot-l"></i> Laki-laki</span>
+                <span class="wali-legend-item"><i class="dot dot-p"></i> Perempuan</span>
+                <span class="wali-legend-item"><i class="dot dot-x"></i> Belum diisi</span>
+            </div>
+            <div class="wali-legend-group">
+                <strong>Kartu:</strong>
+                <span class="wali-legend-item"><i class="dot dot-utama"></i> Wali kelas utama</span>
+                <span class="wali-legend-item"><i class="dot dot-wakil"></i> Wakil wali kelas</span>
+                <span class="wali-legend-item"><i class="dot dot-pengganti"></i> Menggantikan sementara</span>
+            </div>
         </div>
 
         <div class="table-wrap">
@@ -78,7 +90,7 @@
                                 <div class="wali-list">
                                     @if($waliUtama)
                                         <div class="wali wali--utama {{ $waliPengganti ? 'is-berhalangan' : '' }}">
-                                            <span class="wali-avatar">{{ $inisial($waliUtama->nama) }}</span>
+                                            <span class="wali-avatar {{ $kelasJk($waliUtama->jenis_kelamin ?? null) }}">{{ $inisial($waliUtama->nama) }}</span>
                                             <span class="wali-info">
                                                 <span class="wali-nama">{{ $waliUtama->nama }}</span>
                                                 <span class="wali-peran">
@@ -91,7 +103,7 @@
                                     @foreach($waliWakil as $w)
                                         @if($waliPengganti && (int) $w->id === (int) $waliPengganti->id)
                                             <div class="wali wali--pengganti">
-                                                <span class="wali-avatar">{{ $inisial($w->nama) }}</span>
+                                                <span class="wali-avatar {{ $kelasJk($w->jenis_kelamin ?? null) }}">{{ $inisial($w->nama) }}</span>
                                                 <span class="wali-info">
                                                     <span class="wali-nama">{{ $w->nama }}</span>
                                                     <span class="wali-peran">⇄ Menggantikan sementara</span>
@@ -99,7 +111,7 @@
                                             </div>
                                         @else
                                             <div class="wali wali--wakil">
-                                                <span class="wali-avatar">{{ $inisial($w->nama) }}</span>
+                                                <span class="wali-avatar {{ $kelasJk($w->jenis_kelamin ?? null) }}">{{ $inisial($w->nama) }}</span>
                                                 <span class="wali-info">
                                                     <span class="wali-nama">{{ $w->nama }}</span>
                                                     <span class="wali-peran">Wakil Wali Kelas</span>
@@ -186,14 +198,21 @@
 
     /* ===== Keterangan warna ===== */
     #tab-kelas .wali-legend {
-        display: flex; flex-wrap: wrap; gap: .4rem 1.1rem;
-        margin: 0 0 .9rem; font-size: .8rem; color: #6b7280;
+        display: flex; flex-direction: column; gap: .35rem;
+        margin: 0 0 .9rem; padding: .6rem .8rem;
+        font-size: .8rem; color: #6b7280;
+        background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px;
     }
+    #tab-kelas .wali-legend-group { display: flex; flex-wrap: wrap; align-items: center; gap: .3rem 1.1rem; }
+    #tab-kelas .wali-legend-group > strong { min-width: 62px; color: #374151; }
     #tab-kelas .wali-legend-item { display: inline-flex; align-items: center; gap: .4rem; }
     #tab-kelas .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-    #tab-kelas .dot-utama    { background: #1a56db; }
-    #tab-kelas .dot-wakil    { background: #fbbf24; }
-    #tab-kelas .dot-pengganti { background: #ea580c; }
+    #tab-kelas .dot-l        { background: #2563eb; }
+    #tab-kelas .dot-p        { background: #ec4899; }
+    #tab-kelas .dot-x        { background: #9ca3af; }
+    #tab-kelas .dot-utama    { background: #dbeafe; border: 1px solid #93b4f0; }
+    #tab-kelas .dot-wakil    { background: #fef3c7; border: 1px solid #fbbf24; }
+    #tab-kelas .dot-pengganti { background: #ffedd5; border: 1px solid #ea580c; }
 
     /* ===== Kartu wali kelas ===== */
     #tab-kelas .wali-list { display: flex; flex-flow: row wrap; align-items: center; gap: .3rem .4rem; }
@@ -208,35 +227,38 @@
         flex: 0 0 auto; display: grid; place-items: center;
         width: 22px; height: 22px; border-radius: 50%;
         font-size: .62rem; font-weight: 700; letter-spacing: .02em;
+        color: #fff;
     }
+    /* warna avatar menurut jenis kelamin */
+    #tab-kelas .wali-avatar.jk-l { background: #2563eb; }   /* laki-laki: biru */
+    #tab-kelas .wali-avatar.jk-p { background: #ec4899; }   /* perempuan: pink */
+    #tab-kelas .wali-avatar.jk-x { background: #9ca3af; }   /* belum diisi: abu-abu */
+
     #tab-kelas .wali-info { display: flex; flex-direction: column; min-width: 0; line-height: 1.15; white-space: nowrap; }
     #tab-kelas .wali-nama { font-size: .78rem; font-weight: 600; }
     #tab-kelas .wali-peran { font-size: .62rem; margin-top: 1px; }
 
-    /* utama: biru */
+    /* utama: kartu biru */
     #tab-kelas .wali--utama { background: #eff6ff; border-color: #bfdbfe; }
-    #tab-kelas .wali--utama .wali-avatar { background: #1a56db; color: #fff; }
     #tab-kelas .wali--utama .wali-nama   { color: #1e3a8a; }
     #tab-kelas .wali--utama .wali-peran  { color: #3b5fc0; }
 
     /* utama yang sedang digantikan: dipucatkan, garis putus-putus */
     #tab-kelas .wali--utama.is-berhalangan { background: #f8fafc; border: 1px dashed #93b4f0; }
-    #tab-kelas .wali--utama.is-berhalangan .wali-avatar { background: #93b4f0; }
+    #tab-kelas .wali--utama.is-berhalangan .wali-avatar { opacity: .55; }
     #tab-kelas .wali--utama.is-berhalangan .wali-nama   { color: #64748b; }
     #tab-kelas .wali--utama.is-berhalangan .wali-peran  { color: #94a3b8; }
 
-    /* wakil: kuning */
+    /* wakil: kartu kuning */
     #tab-kelas .wali--wakil { background: #fffbeb; border-color: #fde68a; }
-    #tab-kelas .wali--wakil .wali-avatar { background: #fbbf24; color: #78350f; }
     #tab-kelas .wali--wakil .wali-nama   { color: #78350f; }
     #tab-kelas .wali--wakil .wali-peran  { color: #a16207; }
 
-    /* pengganti sementara: oranye */
+    /* pengganti sementara: kartu oranye */
     #tab-kelas .wali--pengganti {
         background: #fff7ed; border-color: #fb923c;
         box-shadow: 0 1px 4px rgba(234, 88, 12, .18);
     }
-    #tab-kelas .wali--pengganti .wali-avatar { background: #ea580c; color: #fff; }
     #tab-kelas .wali--pengganti .wali-nama   { color: #7c2d12; }
     #tab-kelas .wali--pengganti .wali-peran  { color: #c2410c; font-weight: 600; }
 
