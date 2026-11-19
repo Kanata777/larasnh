@@ -289,6 +289,7 @@
                 <div>
                     <div class="sapa">{{ $sapaan }}</div>
                     <h1>Selamat datang, {{ auth()->user()->name }}!</h1>
+@include('partials.status-login')
                     <p>Ringkasan data siswa, sebaran kelas, komposisi jenis kelamin, siswa baru, dan pengingat penting
                         dalam satu halaman.</p>
                 </div>

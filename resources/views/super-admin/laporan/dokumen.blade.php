@@ -6,10 +6,10 @@
         <h2>Cetak Dokumen</h2>
         <p class="lap-muted">{{ $tahunNama ? 'Tahun pelajaran ' . $tahunNama . ' · ' : '' }}Dokumen dibuka di tab baru dan siap dicetak.</p>
     </div>
-    <div class="lap-actions"><a class="lap-btn" href="{{ route('super-admin.laporan.index') }}">← Menu laporan</a></div>
+    <div class="lap-actions"><a class="lap-btn" href="{{ \App\Support\RoleRoute::safe('laporan.index') }}">← Menu laporan</a></div>
 </div>
 
-<form method="GET" action="{{ route('super-admin.laporan.dokumen.hadir') }}" target="_blank" class="lap-card">
+<form method="GET" action="{{ \App\Support\RoleRoute::safe('laporan.dokumen.hadir') }}" target="_blank" class="lap-card">
     <h3>Daftar hadir</h3>
     <p class="lap-muted">Daftar nama siswa aktif dengan kolom tanggal satu bulan.</p>
     <div class="lap-row">
@@ -22,7 +22,7 @@
     </div>
 </form>
 
-<form method="GET" action="{{ route('super-admin.laporan.dokumen.label') }}" target="_blank" class="lap-card">
+<form method="GET" action="{{ \App\Support\RoleRoute::safe('laporan.dokumen.label') }}" target="_blank" class="lap-card">
     <h3>Label nama siswa</h3>
     <p class="lap-muted">Label berisi nama, NIS, dan kelas (3 kolom per baris).</p>
     <div class="lap-row">
@@ -55,7 +55,7 @@
 
 <script>
     const siswa = @json($siswa);
-    const base = @json(route('super-admin.laporan.dokumen.surat', '__ID__'));
+    const base = @json(\App\Support\RoleRoute::safe('laporan.dokumen.surat', '__ID__'));
     const sKelas = document.getElementById('sKelas');
     const sSiswa = document.getElementById('sSiswa');
 

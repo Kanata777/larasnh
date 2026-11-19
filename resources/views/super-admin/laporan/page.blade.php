@@ -7,7 +7,7 @@
         <p class="lap-muted">{{ $tahunNama ? 'Tahun pelajaran ' . $tahunNama . ' · ' : '' }}{{ count($rows) }} baris</p>
     </div>
     <div class="lap-actions">
-        <a class="lap-btn" href="{{ route('super-admin.laporan.index') }}">← Menu laporan</a>
+        <a class="lap-btn" href="{{ \App\Support\RoleRoute::safe('laporan.index') }}">← Menu laporan</a>
         <a class="lap-btn" target="_blank" href="{{ request()->fullUrlWithQuery(['cetak' => 1, 'export' => null]) }}">Cetak / PDF</a>
         <a class="lap-btn lap-btn-primary" href="{{ request()->fullUrlWithQuery(['export' => 1, 'cetak' => null]) }}">Export Excel</a>
     </div>

@@ -16,7 +16,6 @@ use App\Http\Controllers\SuperAdmin\LaporanController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\IndexController as MasterIndexController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasController as MasterKelasController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasImportController as MasterKelasImportController;
-use App\Http\Controllers\SuperAdmin\MasterPendukung\ReferensiController as MasterReferensiController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\TahunPelajaranController as MasterTahunController;
 use App\Http\Controllers\SuperAdmin\SiswaController;
 use App\Http\Controllers\SuperAdmin\SiswaImportController;
@@ -60,12 +59,6 @@ Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () 
         Route::post('process', 'process')->name('process');
         Route::post('cancel', 'cancel')->name('cancel');
     });
-
-    // Data orang tua (tambah, ubah) — hapus khusus Kepala TU
-    Route::controller(MasterReferensiController::class)->group(function () {
-        Route::post('orang-tua', 'storeOrangTua')->name('orang-tua.store');
-        Route::put('orang-tua/{orangTua}', 'updateOrangTua')->name('orang-tua.update');
-    });
 });
 
 /* ===== Laporan ===== */
@@ -103,11 +96,4 @@ Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () 
 
     // Wali kelas
     Route::patch('kelas/{id}/wali', [MasterKelasController::class, 'wali'])->name('kelas.wali');
-
-    // Referensi (ubah) & hapus orang tua
-    Route::controller(MasterReferensiController::class)->group(function () {
-        Route::post('referensi', 'store')->name('referensi.store');
-        Route::put('referensi/{id}', 'update')->name('referensi.update');
-        Route::delete('orang-tua/{orangTua}', 'destroyOrangTua')->name('orang-tua.destroy');
-    });
 });

@@ -13,7 +13,6 @@ use App\Http\Controllers\SuperAdmin\MasterPendukung\IndexController as MasterInd
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasController as MasterKelasController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasImportController as MasterKelasImportController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\OrangTuaController as MasterOrangTuaController;
-use App\Http\Controllers\SuperAdmin\MasterPendukung\ReferensiController as MasterReferensiController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\TahunPelajaranController as MasterTahunController;
 use App\Http\Controllers\SuperAdmin\SiswaController;
 use App\Http\Controllers\SuperAdmin\SiswaImportController;

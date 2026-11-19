@@ -6,7 +6,10 @@ use Illuminate\Foundation\Configuration\Middleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
+        web: [
+            __DIR__.'/../routes/web.php',
+            __DIR__.'/../routes/bk.php',   // modul Bimbingan Konseling (dari larasbk)
+        ],
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -33,6 +36,8 @@ return Application::configure(basePath: dirname(__DIR__))
                 'operator' => route('operator.dashboard'),
                 'kepala_sekolah' => route('kepala-sekolah.dashboard'),
                 'guru' => route('guru.dashboard'),
+                'guru_bk' => route('bk.dashboard'),
+                'kesiswaan', 'wali_kelas' => route('bk.siswa.index'),
                 default => route('login'),
             };
         });

@@ -30,6 +30,17 @@ class Siswa extends Model
         return $this->hasOne(AlamatSiswa::class, 'siswa_id');
     }
 
+    /** Riwayat kelas yang statusnya 'Aktif' (dipakai modul BK: pindah kelas, naik kelas, daftar siswa). */
+    public function riwayatAktif()
+    {
+        return $this->hasOne(RiwayatKelas::class, 'siswa_id')->where('status', 'Aktif');
+    }
+
+    public function waliSiswa()
+    {
+        return $this->hasOne(WaliSiswa::class, 'siswa_id');
+    }
+
     public function riwayatKelas()
     {
         return $this->hasMany(RiwayatKelas::class, 'siswa_id');

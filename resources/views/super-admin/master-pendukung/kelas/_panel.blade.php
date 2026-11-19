@@ -33,7 +33,7 @@
 
                 <button type="button" class="btn btn-primary" data-modal="modal-kelas"
                     data-title="Tambah Kelas / Rombel"
-                    data-action="{{ route('super-admin.master-pendukung.kelas.store') }}" data-method="POST"
+                    data-action="{{ \App\Support\RoleRoute::safe('master-pendukung.kelas.store') }}" data-method="POST"
                     data-values="{{ json_encode(['nama_kelas' => '', 'tingkat' => '', 'tahun_pelajaran_id' => $tahunAktifId ?? '', 'kapasitas' => '', 'wali_kelas_id' => '', 'status' => 'aktif']) }}">
                     + Tambah Kelas
                 </button>
@@ -163,7 +163,7 @@
                                 @endif
                                 <button type="button" class="btn btn-light btn-sm" data-modal="modal-kelas"
                                     data-title="Edit Kelas / Rombel"
-                                    data-action="{{ route('super-admin.master-pendukung.kelas.update', $k->id) }}"
+                                    data-action="{{ \App\Support\RoleRoute::safe('master-pendukung.kelas.update', $k->id) }}"
                                     data-method="PUT"
                                     data-values="{{ json_encode(['nama_kelas' => $k->nama_kelas, 'tingkat' => $k->tingkat, 'tahun_pelajaran_id' => $k->tahun_pelajaran_id, 'kapasitas' => $k->kapasitas ?? '', 'wali_kelas_id' => $k->wali_kelas_id ?? '', 'status' => $k->status]) }}">
                                     Edit

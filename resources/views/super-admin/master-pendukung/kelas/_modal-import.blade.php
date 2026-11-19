@@ -14,7 +14,7 @@
 
     @if(! $imp)
         {{-- ============ Langkah 1: unggah ============ --}}
-        <form method="POST" action="{{ route('super-admin.master-pendukung.kelas.import.preview') }}" enctype="multipart/form-data">
+        <form method="POST" action="{{ \App\Support\RoleRoute::safe('master-pendukung.kelas.import.preview') }}" enctype="multipart/form-data">
             @csrf
             <div class="modal-head">
                 <h3>Import Kelas dari Excel</h3>
@@ -61,7 +61,7 @@
 
     @else
         {{-- ============ Langkah 2: pratinjau ============ --}}
-        <form method="POST" action="{{ route('super-admin.master-pendukung.kelas.import.process') }}">
+        <form method="POST" action="{{ \App\Support\RoleRoute::safe('master-pendukung.kelas.import.process') }}">
             @csrf
             <div class="modal-head">
                 <h3>Pratinjau Import Kelas</h3>
@@ -138,7 +138,7 @@
 
             <div class="modal-foot">
                 <button type="submit" class="btn btn-light"
-                        formaction="{{ route('super-admin.master-pendukung.kelas.import.cancel') }}" formnovalidate>
+                        formaction="{{ \App\Support\RoleRoute::safe('master-pendukung.kelas.import.cancel') }}" formnovalidate>
                     Unggah ulang
                 </button>
                 <button type="submit" class="btn btn-primary" {{ $jumlahBaru ? '' : 'disabled' }}>Impor kelas terpilih</button>

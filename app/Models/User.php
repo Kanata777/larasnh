@@ -20,6 +20,8 @@ class User extends Authenticatable
         'role',
         'status',
         'last_login_at',
+        'no_hp',
+        'wali_kelas_sekolah_id',
     ];
 
     protected $hidden = [

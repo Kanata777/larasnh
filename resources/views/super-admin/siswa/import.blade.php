@@ -24,7 +24,7 @@
                                 dilewati</span>
                         </p>
                     </div>
-                    <a href="{{ route('super-admin.siswa.index') }}" class="btn btn-primary">Lihat daftar siswa</a>
+                    <a href="{{ \App\Support\RoleRoute::safe('siswa.index') }}" class="btn btn-primary">Lihat daftar siswa</a>
                 </div>
 
                 @if($report['skipped'])
@@ -74,10 +74,10 @@
                     <h3>1. Unggah file</h3>
                     <p>Baris pertama berisi judul kolom, baris berikutnya data siswa. Maksimal 3.000 baris dan 5 MB.</p>
                 </div>
-                <a href="{{ route('super-admin.siswa.import.template') }}" class="btn btn-light">⬇ Unduh template</a>
+                <a href="{{ \App\Support\RoleRoute::safe('siswa.import.template') }}" class="btn btn-light">⬇ Unduh template</a>
             </div>
 
-            <form method="POST" action="{{ route('super-admin.siswa.import.preview') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ \App\Support\RoleRoute::safe('siswa.import.preview') }}" enctype="multipart/form-data">
                 @csrf
                 <div class="field">
                     <label for="file">File Excel (.xlsx, .xls) atau CSV</label>
@@ -106,7 +106,7 @@
     @else
 
         {{-- ===== Pemetaan kolom ===== --}}
-        <form method="POST" action="{{ route('super-admin.siswa.import.process') }}">
+        <form method="POST" action="{{ \App\Support\RoleRoute::safe('siswa.import.process') }}">
             @csrf
             <input type="hidden" name="token" value="{{ $token }}">
             <input type="hidden" name="header_row" value="{{ $headerRow }}">
@@ -180,7 +180,7 @@
             <div class="btn-row">
                 <button type="submit" class="btn btn-primary">Validasi &amp; simpan {{ number_format($totalRows, 0, ',', '.') }}
                     baris</button>
-                <a href="{{ route('super-admin.siswa.import') }}" class="btn btn-light">Batal</a>
+                <a href="{{ \App\Support\RoleRoute::safe('siswa.import') }}" class="btn btn-light">Batal</a>
             </div>
         </form>
 

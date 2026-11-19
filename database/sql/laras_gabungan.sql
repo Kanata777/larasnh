@@ -1,0 +1,1387 @@
+-- phpMyAdmin SQL Dump
+-- version 5.2.3
+-- https://www.phpmyadmin.net/
+--
+-- Host: localhost:3306
+-- Generation Time: Nov 18, 2026 at 03:57 AM
+-- Server version: 8.4.3
+-- PHP Version: 8.5.12
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
+--
+-- Database: `laras_nh` (GABUNGAN laras_nh + laras_bk)
+--
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `alamat_siswa`
+--
+
+CREATE TABLE `alamat_siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `alamat` text,
+  `rt` varchar(5) DEFAULT NULL,
+  `rw` varchar(5) DEFAULT NULL,
+  `dusun` varchar(100) DEFAULT NULL,
+  `desa_kelurahan` varchar(100) DEFAULT NULL,
+  `kecamatan` varchar(100) DEFAULT NULL,
+  `kabupaten_kota` varchar(100) DEFAULT NULL,
+  `provinsi` varchar(100) DEFAULT NULL,
+  `kode_pos` varchar(10) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `jenis_tinggal` varchar(50) DEFAULT NULL,
+  `alat_transportasi` varchar(50) DEFAULT NULL,
+  `lintang` decimal(10,7) DEFAULT NULL,
+  `bujur` decimal(10,7) DEFAULT NULL,
+  `jarak_ke_sekolah` decimal(6,2) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bantuan_siswa`
+--
+
+CREATE TABLE `bantuan_siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `penerima_kps` tinyint(1) DEFAULT NULL,
+  `no_kps` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `penerima_kip` tinyint(1) DEFAULT NULL,
+  `no_kip` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nama_di_kip` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_kks` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `layak_pip` tinyint(1) DEFAULT NULL,
+  `alasan_layak_pip` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `bank` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `no_rekening` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `rekening_atas_nama` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache`
+--
+
+CREATE TABLE `cache` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` bigint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cache_locks`
+--
+
+CREATE TABLE `cache_locks` (
+  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `expiration` bigint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `failed_jobs`
+--
+
+CREATE TABLE `failed_jobs` (
+  `id` bigint UNSIGNED NOT NULL,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `jobs`
+--
+
+CREATE TABLE `jobs` (
+  `id` bigint UNSIGNED NOT NULL,
+  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `attempts` smallint UNSIGNED NOT NULL,
+  `reserved_at` int UNSIGNED DEFAULT NULL,
+  `available_at` int UNSIGNED NOT NULL,
+  `created_at` int UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `job_batches`
+--
+
+CREATE TABLE `job_batches` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `total_jobs` int NOT NULL,
+  `pending_jobs` int NOT NULL,
+  `failed_jobs` int NOT NULL,
+  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` mediumtext COLLATE utf8mb4_unicode_ci,
+  `cancelled_at` int DEFAULT NULL,
+  `created_at` int NOT NULL,
+  `finished_at` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kelas`
+--
+
+CREATE TABLE `kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `tahun_pelajaran_id` bigint UNSIGNED NOT NULL,
+  `nama_kelas` varchar(20) NOT NULL,
+  `tingkat` tinyint UNSIGNED NOT NULL,
+  `kapasitas` smallint UNSIGNED DEFAULT NULL,
+  `wali_kelas_id` bigint UNSIGNED DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kelas_wali_kelas`
+--
+
+CREATE TABLE `kelas_wali_kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `kelas_id` bigint UNSIGNED NOT NULL,
+  `wali_kelas_id` bigint UNSIGNED NOT NULL,
+  `peran` varchar(10) NOT NULL DEFAULT 'asisten',
+  `menggantikan` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kontak_siswa`
+--
+
+CREATE TABLE `kontak_siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `telepon_rumah` varchar(20) DEFAULT NULL,
+  `no_hp_siswa` varchar(20) DEFAULT NULL,
+  `no_hp_ayah` varchar(20) DEFAULT NULL,
+  `no_hp_ibu` varchar(20) DEFAULT NULL,
+  `email_ayah` varchar(150) DEFAULT NULL,
+  `email_ibu` varchar(150) DEFAULT NULL,
+  `email_siswa` varchar(150) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `migrations`
+--
+
+CREATE TABLE `migrations` (
+  `id` int UNSIGNED NOT NULL,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `mutasi_siswa`
+--
+
+CREATE TABLE `mutasi_siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED DEFAULT NULL,
+  `nama_siswa` varchar(150) NOT NULL,
+  `no_induk` varchar(20) DEFAULT NULL,
+  `nisn` varchar(20) DEFAULT NULL,
+  `jenis_kelamin` char(1) DEFAULT NULL,
+  `tempat_lahir` varchar(100) DEFAULT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
+  `kelas` varchar(20) DEFAULT NULL,
+  `jenis` enum('masuk','keluar') NOT NULL,
+  `dari_sekolah` varchar(150) DEFAULT NULL,
+  `ke_sekolah` varchar(150) DEFAULT NULL,
+  `tanggal` date DEFAULT NULL,
+  `catatan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `orang_tua`
+--
+
+CREATE TABLE `orang_tua` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `nama_ayah` varchar(150) DEFAULT NULL,
+  `tahun_lahir_ayah` smallint UNSIGNED DEFAULT NULL,
+  `pendidikan_ayah` varchar(50) DEFAULT NULL,
+  `nik_ayah` varchar(20) DEFAULT NULL,
+  `pekerjaan_ayah` varchar(100) DEFAULT NULL,
+  `penghasilan_ayah` varchar(60) DEFAULT NULL,
+  `nama_ibu` varchar(150) DEFAULT NULL,
+  `tahun_lahir_ibu` smallint UNSIGNED DEFAULT NULL,
+  `pendidikan_ibu` varchar(50) DEFAULT NULL,
+  `nik_ibu` varchar(20) DEFAULT NULL,
+  `pekerjaan_ibu` varchar(100) DEFAULT NULL,
+  `penghasilan_ibu` varchar(60) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset_tokens`
+--
+
+CREATE TABLE `password_reset_tokens` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `referensi`
+--
+
+CREATE TABLE `referensi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `jenis` varchar(30) NOT NULL,
+  `nama` varchar(100) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `riwayat_kelas`
+--
+
+CREATE TABLE `riwayat_kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kelas_id` bigint UNSIGNED NOT NULL,
+  `tahun_pelajaran_id` bigint UNSIGNED NOT NULL,
+  `status` enum('Aktif','Naik','Pindah','Lulus') NOT NULL DEFAULT 'Aktif',
+  `tanggal_masuk` date DEFAULT NULL,
+  `tanggal_keluar` date DEFAULT NULL,
+  `catatan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `sessions`
+--
+
+CREATE TABLE `sessions` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `siswa`
+--
+
+CREATE TABLE `siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `nis` varchar(20) DEFAULT NULL,
+  `nisn` varchar(20) DEFAULT NULL,
+  `nik` varchar(20) DEFAULT NULL,
+  `no_kk` varchar(20) DEFAULT NULL,
+  `nama_lengkap` varchar(150) NOT NULL,
+  `jenis_kelamin` enum('L','P') NOT NULL,
+  `tempat_lahir` varchar(100) DEFAULT NULL,
+  `tanggal_lahir` date DEFAULT NULL,
+  `agama` varchar(30) DEFAULT NULL,
+  `asal_sekolah` varchar(150) DEFAULT NULL,
+  `tanggal_masuk` date DEFAULT NULL,
+  `status_siswa` enum('Aktif','Pindah','Lulus','Nonaktif') NOT NULL DEFAULT 'Aktif',
+  `foto` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `no_akta_lahir` varchar(50) DEFAULT NULL,
+  `kebutuhan_khusus` varchar(100) DEFAULT NULL,
+  `anak_ke` tinyint UNSIGNED DEFAULT NULL,
+  `jumlah_saudara` tinyint UNSIGNED DEFAULT NULL,
+  `no_peserta_un` varchar(30) DEFAULT NULL,
+  `no_seri_ijazah` varchar(50) DEFAULT NULL,
+  `skhun` varchar(50) DEFAULT NULL,
+  `berat_badan` decimal(5,1) DEFAULT NULL,
+  `tinggi_badan` decimal(5,1) DEFAULT NULL,
+  `lingkar_kepala` decimal(5,1) DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `tahun_pelajaran`
+--
+
+CREATE TABLE `tahun_pelajaran` (
+  `id` bigint UNSIGNED NOT NULL,
+  `nama` varchar(20) NOT NULL,
+  `tanggal_mulai` date DEFAULT NULL,
+  `tanggal_selesai` date DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `keterangan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `id` bigint UNSIGNED NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `email` varchar(150) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `role` enum('super_admin','kepala_tu','staff_tu','operator','kepala_sekolah','guru') NOT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `last_login_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wali_kelas`
+--
+
+CREATE TABLE `wali_kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `sim_pegawai_id` bigint UNSIGNED DEFAULT NULL,
+  `nip` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `nama` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `jenis_kelamin` enum('L','P') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `email` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `no_hp` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `status` enum('aktif','nonaktif') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'aktif',
+  `tugas_tambahan` varchar(100) DEFAULT NULL,
+  `disinkron_pada` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `wali_siswa`
+--
+
+CREATE TABLE `wali_siswa` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `nama_wali` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tahun_lahir_wali` smallint UNSIGNED DEFAULT NULL,
+  `pendidikan_wali` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `pekerjaan_wali` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `penghasilan_wali` varchar(60) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `nik_wali` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `alamat_siswa`
+--
+ALTER TABLE `alamat_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `siswa_id` (`siswa_id`),
+  ADD KEY `idx_alamat_desa` (`desa_kelurahan`),
+  ADD KEY `idx_alamat_kecamatan` (`kecamatan`),
+  ADD KEY `idx_alamat_kabupaten` (`kabupaten_kota`);
+
+--
+-- Indexes for table `bantuan_siswa`
+--
+ALTER TABLE `bantuan_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `bantuan_siswa_siswa_id_unique` (`siswa_id`);
+
+--
+-- Indexes for table `cache`
+--
+ALTER TABLE `cache`
+  ADD PRIMARY KEY (`key`),
+  ADD KEY `cache_expiration_index` (`expiration`);
+
+--
+-- Indexes for table `cache_locks`
+--
+ALTER TABLE `cache_locks`
+  ADD PRIMARY KEY (`key`),
+  ADD KEY `cache_locks_expiration_index` (`expiration`);
+
+--
+-- Indexes for table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`),
+  ADD KEY `failed_jobs_connection_queue_failed_at_index` (`connection`,`queue`,`failed_at`);
+
+--
+-- Indexes for table `jobs`
+--
+ALTER TABLE `jobs`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `jobs_queue_index` (`queue`);
+
+--
+-- Indexes for table `job_batches`
+--
+ALTER TABLE `job_batches`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `kelas`
+--
+ALTER TABLE `kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_kelas_tahun_nama` (`tahun_pelajaran_id`,`nama_kelas`),
+  ADD KEY `idx_kelas_tingkat` (`tingkat`),
+  ADD KEY `idx_kelas_status` (`status`),
+  ADD KEY `fk_kelas_wali_kelas` (`wali_kelas_id`);
+
+--
+-- Indexes for table `kelas_wali_kelas`
+--
+ALTER TABLE `kelas_wali_kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `kelas_wali_kelas_unique` (`kelas_id`,`wali_kelas_id`),
+  ADD KEY `kelas_wali_kelas_wali_kelas_id_foreign` (`wali_kelas_id`);
+
+--
+-- Indexes for table `kontak_siswa`
+--
+ALTER TABLE `kontak_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `siswa_id` (`siswa_id`);
+
+--
+-- Indexes for table `migrations`
+--
+ALTER TABLE `migrations`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `mutasi_siswa`
+--
+ALTER TABLE `mutasi_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_mutasi_siswa` (`siswa_id`),
+  ADD KEY `idx_mutasi_tanggal` (`tanggal`);
+
+--
+-- Indexes for table `orang_tua`
+--
+ALTER TABLE `orang_tua`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `siswa_id` (`siswa_id`);
+
+--
+-- Indexes for table `password_reset_tokens`
+--
+ALTER TABLE `password_reset_tokens`
+  ADD PRIMARY KEY (`email`);
+
+--
+-- Indexes for table `referensi`
+--
+ALTER TABLE `referensi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `referensi_jenis_index` (`jenis`);
+
+--
+-- Indexes for table `riwayat_kelas`
+--
+ALTER TABLE `riwayat_kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_siswa_tahun` (`siswa_id`,`tahun_pelajaran_id`),
+  ADD KEY `idx_riwayat_siswa` (`siswa_id`),
+  ADD KEY `idx_riwayat_kelas` (`kelas_id`),
+  ADD KEY `idx_riwayat_tahun` (`tahun_pelajaran_id`),
+  ADD KEY `idx_riwayat_status` (`status`);
+
+--
+-- Indexes for table `sessions`
+--
+ALTER TABLE `sessions`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `sessions_user_id_index` (`user_id`),
+  ADD KEY `sessions_last_activity_index` (`last_activity`);
+
+--
+-- Indexes for table `siswa`
+--
+ALTER TABLE `siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nis` (`nis`),
+  ADD UNIQUE KEY `nisn` (`nisn`),
+  ADD KEY `idx_siswa_status` (`status_siswa`),
+  ADD KEY `idx_siswa_nama` (`nama_lengkap`),
+  ADD KEY `siswa_nik_index` (`nik`),
+  ADD KEY `idx_siswa_deleted_at` (`deleted_at`);
+
+--
+-- Indexes for table `tahun_pelajaran`
+--
+ALTER TABLE `tahun_pelajaran`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nama` (`nama`),
+  ADD KEY `idx_tahun_status` (`status`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
+-- Indexes for table `wali_kelas`
+--
+ALTER TABLE `wali_kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `wali_kelas_nip_unique` (`nip`),
+  ADD UNIQUE KEY `wali_kelas_email_unique` (`email`),
+  ADD UNIQUE KEY `wali_kelas_sim_pegawai_id_unique` (`sim_pegawai_id`),
+  ADD KEY `wali_kelas_nama_index` (`nama`);
+
+--
+-- Indexes for table `wali_siswa`
+--
+ALTER TABLE `wali_siswa`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `wali_siswa_siswa_id_unique` (`siswa_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `alamat_siswa`
+--
+ALTER TABLE `alamat_siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `bantuan_siswa`
+--
+ALTER TABLE `bantuan_siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `failed_jobs`
+--
+ALTER TABLE `failed_jobs`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `jobs`
+--
+ALTER TABLE `jobs`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kelas`
+--
+ALTER TABLE `kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kelas_wali_kelas`
+--
+ALTER TABLE `kelas_wali_kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kontak_siswa`
+--
+ALTER TABLE `kontak_siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `migrations`
+--
+ALTER TABLE `migrations`
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `mutasi_siswa`
+--
+ALTER TABLE `mutasi_siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `orang_tua`
+--
+ALTER TABLE `orang_tua`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `referensi`
+--
+ALTER TABLE `referensi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `riwayat_kelas`
+--
+ALTER TABLE `riwayat_kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `siswa`
+--
+ALTER TABLE `siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `tahun_pelajaran`
+--
+ALTER TABLE `tahun_pelajaran`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wali_kelas`
+--
+ALTER TABLE `wali_kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `wali_siswa`
+--
+ALTER TABLE `wali_siswa`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `alamat_siswa`
+--
+ALTER TABLE `alamat_siswa`
+  ADD CONSTRAINT `fk_alamat_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `bantuan_siswa`
+--
+ALTER TABLE `bantuan_siswa`
+  ADD CONSTRAINT `bantuan_siswa_siswa_id_foreign` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `kelas`
+--
+ALTER TABLE `kelas`
+  ADD CONSTRAINT `fk_kelas_tahun_pelajaran` FOREIGN KEY (`tahun_pelajaran_id`) REFERENCES `tahun_pelajaran` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_kelas_wali_kelas` FOREIGN KEY (`wali_kelas_id`) REFERENCES `wali_kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+--
+-- Constraints for table `kelas_wali_kelas`
+--
+ALTER TABLE `kelas_wali_kelas`
+  ADD CONSTRAINT `kelas_wali_kelas_kelas_id_foreign` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `kelas_wali_kelas_wali_kelas_id_foreign` FOREIGN KEY (`wali_kelas_id`) REFERENCES `wali_kelas` (`id`) ON DELETE CASCADE;
+
+--
+-- Constraints for table `kontak_siswa`
+--
+ALTER TABLE `kontak_siswa`
+  ADD CONSTRAINT `fk_kontak_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `mutasi_siswa`
+--
+ALTER TABLE `mutasi_siswa`
+  ADD CONSTRAINT `fk_mutasi_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `orang_tua`
+--
+ALTER TABLE `orang_tua`
+  ADD CONSTRAINT `fk_orang_tua_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `riwayat_kelas`
+--
+ALTER TABLE `riwayat_kelas`
+  ADD CONSTRAINT `fk_riwayat_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_riwayat_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_riwayat_tahun_pelajaran` FOREIGN KEY (`tahun_pelajaran_id`) REFERENCES `tahun_pelajaran` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `wali_siswa`
+--
+ALTER TABLE `wali_siswa`
+  ADD CONSTRAINT `wali_siswa_siswa_id_foreign` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE;
+
+-- ============================================================
+-- PENGGABUNGAN: modul Bimbingan Konseling (asal: laras_bk)
+-- Tabel users/sessions/password_reset_tokens memakai milik laras_nh.
+-- ============================================================
+
+-- 1. Tabel modul BK
+
+CREATE TABLE `akses_kelas_guru` (
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `kelas_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `akses_orang_tua` (
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `hubungan` enum('ayah','ibu','wali') NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `aturan_kelas_gender` (
+  `id` bigint UNSIGNED NOT NULL,
+  `tingkat` tinyint UNSIGNED NOT NULL DEFAULT '3',
+  `nama_kelas` varchar(20) NOT NULL,
+  `jenis_kelamin` enum('L','P') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `audit_log` (
+  `id` bigint UNSIGNED NOT NULL,
+  `user_id` bigint UNSIGNED DEFAULT NULL,
+  `aksi` enum('lihat','tambah','ubah','hapus','cetak','unduh','login') NOT NULL,
+  `tabel` varchar(60) DEFAULT NULL,
+  `record_id` bigint UNSIGNED DEFAULT NULL,
+  `detail` json DEFAULT NULL,
+  `ip_address` varchar(45) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `bidang_layanan` (
+  `id` tinyint UNSIGNED NOT NULL,
+  `nama` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `hasil_tes` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `jenis_tes` varchar(100) NOT NULL,
+  `tanggal_tes` date NOT NULL,
+  `skor` varchar(100) DEFAULT NULL,
+  `interpretasi` text,
+  `dicatat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `kasus` (
+  `id` bigint UNSIGNED NOT NULL,
+  `kode_kasus` varchar(30) NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kelas_id` bigint UNSIGNED DEFAULT NULL,
+  `tahun_pelajaran_id` bigint UNSIGNED DEFAULT NULL,
+  `bidang_id` tinyint UNSIGNED NOT NULL,
+  `judul` varchar(200) NOT NULL,
+  `deskripsi` text,
+  `prioritas` enum('rendah','sedang','tinggi','darurat') NOT NULL DEFAULT 'sedang',
+  `sumber` enum('siswa','wali_kelas','orang_tua','guru_mapel','observasi','lainnya') NOT NULL DEFAULT 'lainnya',
+  `status` enum('baru','proses','berlanjut','tuntas') NOT NULL DEFAULT 'baru',
+  `tanggal_masuk` date NOT NULL,
+  `tanggal_tuntas` date DEFAULT NULL,
+  `dibuat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `kasus_konseling` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kelas_id` bigint UNSIGNED DEFAULT NULL,
+  `nama_kelas` varchar(50) DEFAULT NULL,
+  `semester` varchar(10) NOT NULL,
+  `tanggal` date NOT NULL,
+  `komponen_layanan` varchar(60) NOT NULL,
+  `bidang_layanan` varchar(60) NOT NULL,
+  `topik_layanan` varchar(200) NOT NULL,
+  `tujuan_layanan` text NOT NULL,
+  `durasi_menit` smallint UNSIGNED NOT NULL,
+  `materi` text NOT NULL,
+  `tindak_lanjut` text NOT NULL,
+  `dibuat_oleh` bigint UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `lampiran` (
+  `id` bigint UNSIGNED NOT NULL,
+  `lampiran_type` varchar(50) NOT NULL,
+  `lampiran_id` bigint UNSIGNED NOT NULL,
+  `jenis` enum('foto','video','audio','dokumen') NOT NULL,
+  `nama_asli` varchar(255) NOT NULL,
+  `path` varchar(255) NOT NULL,
+  `mime` varchar(100) NOT NULL,
+  `ukuran_byte` bigint UNSIGNED NOT NULL,
+  `keterangan` varchar(255) DEFAULT NULL,
+  `diunggah_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `laporan_konseling` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL COMMENT 'laras_nh.siswa.id',
+  `kelas_id` bigint UNSIGNED NOT NULL COMMENT 'laras_nh.kelas.id (kelas yang dipilih guru BK)',
+  `tahun_pelajaran_id` bigint UNSIGNED DEFAULT NULL COMMENT 'laras_nh.tahun_pelajaran.id (diambil dari kelas)',
+  `semester` enum('ganjil','genap') NOT NULL,
+  `komponen_layanan` varchar(30) NOT NULL COMMENT 'layanan_dasar | layanan_responsif | perencanaan_individual | dukungan_sistem',
+  `bidang_id` tinyint UNSIGNED NOT NULL,
+  `tanggal` date NOT NULL,
+  `topik` varchar(200) NOT NULL,
+  `tujuan` text NOT NULL,
+  `durasi_menit` smallint UNSIGNED NOT NULL,
+  `materi` text NOT NULL,
+  `tindak_lanjut` text NOT NULL,
+  `dibuat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `laporan_layanan` (
+  `id` bigint UNSIGNED NOT NULL,
+  `kasus_id` bigint UNSIGNED NOT NULL,
+  `ringkasan` text NOT NULL,
+  `intervensi` text,
+  `hasil_akhir` text,
+  `rekomendasi` text,
+  `dibuat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `observasi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `guru_id` bigint UNSIGNED DEFAULT NULL,
+  `tanggal` date NOT NULL,
+  `aspek` varchar(100) DEFAULT NULL,
+  `catatan` text NOT NULL,
+  `dicatat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `observasi_potensi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL COMMENT 'laras_nh.siswa.id',
+  `kelas_id` bigint UNSIGNED DEFAULT NULL COMMENT 'laras_nh.kelas.id (kelas aktif saat dicatat)',
+  `tanggal` date NOT NULL,
+  `kategori` varchar(30) NOT NULL COMMENT 'akademik | bahasa_komunikasi | sains_teknologi | seni | olahraga | kepemimpinan | sosial_emosional',
+  `tingkat_potensi` varchar(20) NOT NULL COMMENT 'menonjol | berkembang | perlu_stimulasi',
+  `bakat_minat` varchar(150) DEFAULT NULL COMMENT 'contoh: menggambar, bermain piano',
+  `temuan` text NOT NULL COMMENT 'perilaku/hasil pengamatan sebagai bukti',
+  `rekomendasi` text COMMENT 'saran pengembangan',
+  `pengamat` varchar(150) NOT NULL COMMENT 'siapa yang mengamati (nama guru)',
+  `dicatat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `pengajuan_pindah_kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kelas_asal_id` bigint UNSIGNED NOT NULL,
+  `kelas_tujuan_id` bigint UNSIGNED NOT NULL,
+  `alasan` text,
+  `status` enum('diajukan_bk','final_wali_kelas','selesai','ditolak') NOT NULL DEFAULT 'diajukan_bk',
+  `diajukan_oleh` bigint UNSIGNED NOT NULL,
+  `difinalkan_oleh` bigint UNSIGNED DEFAULT NULL,
+  `difinalkan_at` datetime DEFAULT NULL,
+  `catatan_penolakan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `penugasan_observasi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `guru_id` bigint UNSIGNED NOT NULL,
+  `tahun_pelajaran_id` bigint UNSIGNED DEFAULT NULL,
+  `catatan` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `pindah_kelas` (
+  `id` bigint UNSIGNED NOT NULL,
+  `batch` char(36) NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kelas_asal_id` bigint UNSIGNED NOT NULL,
+  `kelas_tujuan_id` bigint UNSIGNED NOT NULL,
+  `mode` varchar(10) NOT NULL DEFAULT 'terpilih',
+  `tanggal` date NOT NULL,
+  `alasan` varchar(500) DEFAULT NULL,
+  `dipindah_oleh` bigint UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `prestasi` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `nama_prestasi` varchar(200) NOT NULL,
+  `kategori` varchar(30) DEFAULT NULL,
+  `tingkat` enum('sekolah','kecamatan','kabupaten','provinsi','nasional','internasional') NOT NULL,
+  `peringkat` varchar(50) DEFAULT NULL,
+  `tanggal` date DEFAULT NULL,
+  `dicatat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `profil_siswa_bk` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `cita_cita` varchar(150) DEFAULT NULL,
+  `hobi` varchar(150) DEFAULT NULL,
+  `tinggal_dengan` varchar(100) DEFAULT NULL,
+  `catatan_kesehatan` text,
+  `catatan_bk` text,
+  `diubah_oleh` bigint UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `psikolog` (
+  `id` bigint UNSIGNED NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `lembaga` varchar(150) DEFAULT NULL,
+  `telepon` varchar(40) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `aktif` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `rujukan_hasil_tes` (
+  `rujukan_id` bigint UNSIGNED NOT NULL,
+  `hasil_tes_id` bigint UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `rujukan_psikolog` (
+  `id` bigint UNSIGNED NOT NULL,
+  `siswa_id` bigint UNSIGNED NOT NULL,
+  `kasus_konseling_id` bigint UNSIGNED NOT NULL,
+  `psikolog_id` bigint UNSIGNED NOT NULL,
+  `tanggal_rujukan` date NOT NULL,
+  `alasan` text NOT NULL,
+  `ringkasan_kasus` text NOT NULL,
+  `catatan` text,
+  `status` varchar(30) NOT NULL DEFAULT 'Diajukan',
+  `hasil_catatan` text,
+  `tindak_lanjut` text,
+  `tanggal_selesai` date DEFAULT NULL,
+  `dibuat_oleh` bigint UNSIGNED DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+CREATE TABLE `sesi_konseling` (
+  `id` bigint UNSIGNED NOT NULL,
+  `kasus_id` bigint UNSIGNED NOT NULL,
+  `jenis_layanan` enum('individu','wali_kelas','orang_tua','kelompok') NOT NULL,
+  `tanggal` datetime NOT NULL,
+  `pihak_hadir` varchar(255) DEFAULT NULL,
+  `uraian` text NOT NULL,
+  `hasil` text,
+  `tindak_lanjut` text,
+  `status_setelah` enum('berlanjut','tuntas') NOT NULL DEFAULT 'berlanjut',
+  `jadwal_berikutnya` datetime DEFAULT NULL,
+  `dicatat_oleh` bigint UNSIGNED NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- 2. Index & primary key modul BK
+
+ALTER TABLE `akses_kelas_guru`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_akses_kelas_guru` (`user_id`,`kelas_id`);
+
+ALTER TABLE `akses_orang_tua`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_akses_ortu` (`user_id`,`siswa_id`);
+
+ALTER TABLE `aturan_kelas_gender`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_nama_kelas` (`nama_kelas`);
+
+ALTER TABLE `audit_log`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_audit_user` (`user_id`,`created_at`),
+  ADD KEY `idx_audit_rec` (`tabel`,`record_id`);
+
+ALTER TABLE `bidang_layanan`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `nama` (`nama`);
+
+ALTER TABLE `hasil_tes`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dicatat_oleh` (`dicatat_oleh`),
+  ADD KEY `idx_tes_siswa` (`siswa_id`);
+
+ALTER TABLE `kasus`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `kode_kasus` (`kode_kasus`),
+  ADD KEY `bidang_id` (`bidang_id`),
+  ADD KEY `dibuat_oleh` (`dibuat_oleh`),
+  ADD KEY `idx_kasus_siswa` (`siswa_id`),
+  ADD KEY `idx_kasus_status_prioritas` (`status`,`prioritas`);
+
+ALTER TABLE `kasus_konseling`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `kasus_konseling_siswa_id_index` (`siswa_id`);
+
+ALTER TABLE `lampiran`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `diunggah_oleh` (`diunggah_oleh`),
+  ADD KEY `idx_lampiran_induk` (`lampiran_type`,`lampiran_id`);
+
+ALTER TABLE `laporan_konseling`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `bidang_id` (`bidang_id`),
+  ADD KEY `dibuat_oleh` (`dibuat_oleh`),
+  ADD KEY `idx_laporan_siswa_tanggal` (`siswa_id`,`tanggal`),
+  ADD KEY `idx_laporan_kelas_semester` (`kelas_id`,`semester`);
+
+ALTER TABLE `laporan_layanan`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `kasus_id` (`kasus_id`),
+  ADD KEY `dibuat_oleh` (`dibuat_oleh`);
+
+ALTER TABLE `observasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `guru_id` (`guru_id`),
+  ADD KEY `dicatat_oleh` (`dicatat_oleh`),
+  ADD KEY `idx_observasi_siswa` (`siswa_id`);
+
+ALTER TABLE `observasi_potensi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dicatat_oleh` (`dicatat_oleh`),
+  ADD KEY `idx_observasi_siswa_tanggal` (`siswa_id`,`tanggal`),
+  ADD KEY `idx_observasi_kategori` (`kategori`,`tingkat_potensi`);
+
+ALTER TABLE `pengajuan_pindah_kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `diajukan_oleh` (`diajukan_oleh`),
+  ADD KEY `difinalkan_oleh` (`difinalkan_oleh`),
+  ADD KEY `idx_pindah_status` (`status`),
+  ADD KEY `idx_pindah_siswa` (`siswa_id`);
+
+ALTER TABLE `penugasan_observasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_obs` (`siswa_id`,`guru_id`,`tahun_pelajaran_id`),
+  ADD KEY `guru_id` (`guru_id`);
+
+ALTER TABLE `pindah_kelas`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `pindah_kelas_siswa_id_index` (`siswa_id`),
+  ADD KEY `pindah_kelas_batch_index` (`batch`),
+  ADD KEY `pindah_kelas_tanggal_index` (`tanggal`);
+
+ALTER TABLE `prestasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dicatat_oleh` (`dicatat_oleh`),
+  ADD KEY `idx_prestasi_siswa` (`siswa_id`);
+
+ALTER TABLE `profil_siswa_bk`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `siswa_id` (`siswa_id`),
+  ADD KEY `diubah_oleh` (`diubah_oleh`);
+
+ALTER TABLE `psikolog`
+  ADD PRIMARY KEY (`id`);
+
+ALTER TABLE `rujukan_hasil_tes`
+  ADD PRIMARY KEY (`rujukan_id`,`hasil_tes_id`),
+  ADD KEY `hasil_tes_id` (`hasil_tes_id`);
+
+ALTER TABLE `rujukan_psikolog`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `rujukan_psikolog_siswa_id_index` (`siswa_id`),
+  ADD KEY `rujukan_psikolog_status_index` (`status`),
+  ADD KEY `rujukan_psikolog_kasus_konseling_id_foreign` (`kasus_konseling_id`),
+  ADD KEY `rujukan_psikolog_psikolog_id_foreign` (`psikolog_id`);
+
+ALTER TABLE `sesi_konseling`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `dicatat_oleh` (`dicatat_oleh`),
+  ADD KEY `idx_sesi_kasus_tgl` (`kasus_id`,`tanggal`);
+
+-- 3. Perubahan tabel users (gabungan role)
+
+-- Role gabungan nh + bk. Pemetaan: bk.tu -> staff_tu ; bk.nama -> users.name (kolom nh dipakai)
+ALTER TABLE `users`
+  MODIFY `role` enum('super_admin','kepala_tu','staff_tu','operator','kepala_sekolah','guru',
+                     'guru_bk','kesiswaan','wali_kelas','guru_mapel','orang_tua') NOT NULL,
+  ADD COLUMN `email_verified_at` timestamp NULL DEFAULT NULL AFTER `email`,
+  ADD COLUMN `no_hp` varchar(20) DEFAULT NULL AFTER `role`,
+  ADD COLUMN `wali_kelas_sekolah_id` bigint UNSIGNED DEFAULT NULL AFTER `no_hp`,
+  ADD COLUMN `remember_token` varchar(100) DEFAULT NULL AFTER `last_login_at`,
+  ADD KEY `idx_users_role` (`role`),
+  ADD CONSTRAINT `fk_users_wali_kelas` FOREIGN KEY (`wali_kelas_sekolah_id`) REFERENCES `wali_kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- 4. AUTO_INCREMENT modul BK
+
+ALTER TABLE `akses_kelas_guru`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `akses_orang_tua`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `aturan_kelas_gender`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `audit_log`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `bidang_layanan`
+  MODIFY `id` tinyint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `hasil_tes`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `kasus`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `kasus_konseling`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `lampiran`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `laporan_konseling`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `laporan_layanan`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `observasi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `observasi_potensi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `pengajuan_pindah_kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `penugasan_observasi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `pindah_kelas`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `prestasi`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `profil_siswa_bk`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `psikolog`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `rujukan_psikolog`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `sesi_konseling`
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT;
+
+-- 5. Foreign key bawaan modul BK (users, bidang_layanan, kasus, dst.)
+
+ALTER TABLE `akses_kelas_guru`
+  ADD CONSTRAINT `akses_kelas_guru_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `akses_orang_tua`
+  ADD CONSTRAINT `akses_orang_tua_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `audit_log`
+  ADD CONSTRAINT `audit_log_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+ALTER TABLE `hasil_tes`
+  ADD CONSTRAINT `hasil_tes_ibfk_1` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `kasus`
+  ADD CONSTRAINT `kasus_ibfk_1` FOREIGN KEY (`bidang_id`) REFERENCES `bidang_layanan` (`id`),
+  ADD CONSTRAINT `kasus_ibfk_2` FOREIGN KEY (`dibuat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `lampiran`
+  ADD CONSTRAINT `lampiran_ibfk_1` FOREIGN KEY (`diunggah_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `laporan_konseling`
+  ADD CONSTRAINT `laporan_konseling_ibfk_1` FOREIGN KEY (`bidang_id`) REFERENCES `bidang_layanan` (`id`),
+  ADD CONSTRAINT `laporan_konseling_ibfk_2` FOREIGN KEY (`dibuat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `laporan_layanan`
+  ADD CONSTRAINT `laporan_layanan_ibfk_1` FOREIGN KEY (`kasus_id`) REFERENCES `kasus` (`id`),
+  ADD CONSTRAINT `laporan_layanan_ibfk_2` FOREIGN KEY (`dibuat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `observasi`
+  ADD CONSTRAINT `observasi_ibfk_1` FOREIGN KEY (`guru_id`) REFERENCES `users` (`id`) ON DELETE SET NULL,
+  ADD CONSTRAINT `observasi_ibfk_2` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `observasi_potensi`
+  ADD CONSTRAINT `observasi_potensi_ibfk_1` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `pengajuan_pindah_kelas`
+  ADD CONSTRAINT `pengajuan_pindah_kelas_ibfk_1` FOREIGN KEY (`diajukan_oleh`) REFERENCES `users` (`id`),
+  ADD CONSTRAINT `pengajuan_pindah_kelas_ibfk_2` FOREIGN KEY (`difinalkan_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `penugasan_observasi`
+  ADD CONSTRAINT `penugasan_observasi_ibfk_1` FOREIGN KEY (`guru_id`) REFERENCES `users` (`id`);
+
+ALTER TABLE `prestasi`
+  ADD CONSTRAINT `prestasi_ibfk_1` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users` (`id`);
+
+ALTER TABLE `profil_siswa_bk`
+  ADD CONSTRAINT `profil_siswa_bk_ibfk_1` FOREIGN KEY (`diubah_oleh`) REFERENCES `users` (`id`) ON DELETE SET NULL;
+
+ALTER TABLE `rujukan_hasil_tes`
+  ADD CONSTRAINT `rujukan_hasil_tes_ibfk_1` FOREIGN KEY (`rujukan_id`) REFERENCES `rujukan_psikolog` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `rujukan_hasil_tes_ibfk_2` FOREIGN KEY (`hasil_tes_id`) REFERENCES `hasil_tes` (`id`) ON DELETE CASCADE;
+
+ALTER TABLE `rujukan_psikolog`
+  ADD CONSTRAINT `rujukan_psikolog_kasus_konseling_id_foreign` FOREIGN KEY (`kasus_konseling_id`) REFERENCES `kasus_konseling` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `rujukan_psikolog_psikolog_id_foreign` FOREIGN KEY (`psikolog_id`) REFERENCES `psikolog` (`id`) ON DELETE RESTRICT;
+
+ALTER TABLE `sesi_konseling`
+  ADD CONSTRAINT `sesi_konseling_ibfk_1` FOREIGN KEY (`kasus_id`) REFERENCES `kasus` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `sesi_konseling_ibfk_2` FOREIGN KEY (`dicatat_oleh`) REFERENCES `users` (`id`);
+
+-- 6. Foreign key BARU ke siswa / kelas / tahun_pelajaran
+-- (di laras_bk hanya berupa komentar; sekarang satu database sehingga bisa dijaga FK)
+
+ALTER TABLE `akses_orang_tua`
+  ADD CONSTRAINT `fk_akses_orang_tua_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `hasil_tes`
+  ADD CONSTRAINT `fk_hasil_tes_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `kasus`
+  ADD CONSTRAINT `fk_kasus_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_kasus_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_kasus_tahun` FOREIGN KEY (`tahun_pelajaran_id`) REFERENCES `tahun_pelajaran` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `kasus_konseling`
+  ADD CONSTRAINT `fk_kasus_konseling_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_kasus_konseling_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `laporan_konseling`
+  ADD CONSTRAINT `fk_laporan_konseling_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_laporan_konseling_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_laporan_konseling_tahun` FOREIGN KEY (`tahun_pelajaran_id`) REFERENCES `tahun_pelajaran` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `observasi`
+  ADD CONSTRAINT `fk_observasi_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `observasi_potensi`
+  ADD CONSTRAINT `fk_observasi_potensi_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_observasi_potensi_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `pengajuan_pindah_kelas`
+  ADD CONSTRAINT `fk_pengajuan_pindah_kelas_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pengajuan_kelas_asal` FOREIGN KEY (`kelas_asal_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pengajuan_kelas_tujuan` FOREIGN KEY (`kelas_tujuan_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `penugasan_observasi`
+  ADD CONSTRAINT `fk_penugasan_observasi_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_penugasan_observasi_tahun` FOREIGN KEY (`tahun_pelajaran_id`) REFERENCES `tahun_pelajaran` (`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+ALTER TABLE `pindah_kelas`
+  ADD CONSTRAINT `fk_pindah_kelas_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pindah_kelas_asal` FOREIGN KEY (`kelas_asal_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pindah_kelas_tujuan` FOREIGN KEY (`kelas_tujuan_id`) REFERENCES `kelas` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `prestasi`
+  ADD CONSTRAINT `fk_prestasi_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `profil_siswa_bk`
+  ADD CONSTRAINT `fk_profil_siswa_bk_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+ALTER TABLE `rujukan_psikolog`
+  ADD CONSTRAINT `fk_rujukan_psikolog_siswa` FOREIGN KEY (`siswa_id`) REFERENCES `siswa` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+ALTER TABLE `akses_kelas_guru`
+  ADD CONSTRAINT `fk_akses_kelas_guru_kelas` FOREIGN KEY (`kelas_id`) REFERENCES `kelas` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

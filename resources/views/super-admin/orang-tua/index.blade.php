@@ -173,13 +173,13 @@
                                     <td class="actions">
                                         <button type="button" class="btn btn-light btn-sm" data-ot-open
                                             data-title="Edit Orang Tua"
-                                            data-action="{{ route('super-admin.orang-tua.update', $o->id) }}"
+                                            data-action="{{ \App\Support\RoleRoute::safe('orang-tua.update', $o->id) }}"
                                             data-method="PUT"
                                             data-values="{{ json_encode($o->only($kolomForm)) }}">
                                             Edit
                                         </button>
                                         <form class="inline-form" method="POST"
-                                              action="{{ route('super-admin.orang-tua.destroy', $o->id) }}"
+                                              action="{{ \App\Support\RoleRoute::safe('orang-tua.destroy', $o->id) }}"
                                               onsubmit="return confirm('Hapus data orang tua {{ addslashes($o->siswa_nama ?? '') }}?')">
                                             @csrf
                                             @method('DELETE')

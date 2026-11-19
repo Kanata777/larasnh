@@ -3,15 +3,19 @@
 namespace App\Http\Controllers\SuperAdmin\MasterPendukung;
 
 use App\Http\Controllers\Controller;
+use App\Support\RoleRoute;
 use Illuminate\Http\RedirectResponse;
 
 abstract class BaseController extends Controller
 {
-    /** Kembali ke halaman master pendukung dan langsung membuka tab terkait. */
+    /**
+     * Kembali ke halaman master pendukung (sesuai role yang login) dan langsung membuka tab terkait.
+     * Sebelumnya dikunci ke route super-admin, sehingga role lain (mis. Staff TU) kena 403 setelah menyimpan.
+     */
     protected function kembali(string $tab, string $pesan): RedirectResponse
     {
         return redirect()
-            ->to(route('super-admin.master-pendukung.index') . '#' . $tab)
+            ->to(RoleRoute::to('master-pendukung.index') . '#' . $tab)
             ->with('success', $pesan);
     }
 

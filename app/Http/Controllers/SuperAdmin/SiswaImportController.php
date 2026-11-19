@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
+use App\Support\RoleRoute;
 use App\Support\SiswaData;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
@@ -217,7 +218,7 @@ class SiswaImportController extends Controller
 
         $token = $request->input('token');
         if (! Storage::exists("import-siswa/{$token}")) {
-            return redirect()->route('super-admin.siswa.import')
+            return redirect(RoleRoute::to('siswa.import'))
                 ->withErrors(['file' => 'Sesi import sudah berakhir. Unggah ulang filenya.']);
         }
 
@@ -364,7 +365,7 @@ class SiswaImportController extends Controller
         }
         $pesan .= $errors ? ', ' . count($errors) . ' baris dilewati.' : '.';
 
-        return redirect()->route('super-admin.siswa.import')
+        return redirect(RoleRoute::to('siswa.import'))
             ->with('report', $report)
             ->with('success', $pesan);
     }

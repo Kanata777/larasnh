@@ -64,6 +64,25 @@ return [
             ]) : [],
         ],
 
+        'sekolah' => [
+            'driver' => 'mysql',
+            'host' => env('DB_SEKOLAH_HOST', '127.0.0.1'),
+            'port' => env('DB_SEKOLAH_PORT', '3306'),
+            'database' => env('DB_SEKOLAH_DATABASE', 'laras_nh'),
+            'username' => env('DB_SEKOLAH_USERNAME', 'root'),
+            'password' => env('DB_SEKOLAH_PASSWORD', ''),
+            'unix_socket' => env('DB_SOCKET', ''),
+            'charset' => env('DB_CHARSET', 'utf8mb4'),
+            'collation' => env('DB_COLLATION', 'utf8mb4_unicode_ci'),
+            'prefix' => '',
+            'prefix_indexes' => true,
+            'strict' => true,
+            'engine' => null,
+            'options' => extension_loaded('pdo_mysql') ? array_filter([
+                Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            ]) : [],
+        ],
+
         'mariadb' => [
             'driver' => 'mariadb',
             'url' => env('DB_URL'),
@@ -149,7 +168,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')).'-database-'),
+            'prefix' => env('REDIS_PREFIX', Str::slug((string) env('APP_NAME', 'laravel')) . '-database-'),
             'persistent' => env('REDIS_PERSISTENT', false),
         ],
 

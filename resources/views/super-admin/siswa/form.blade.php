@@ -156,7 +156,7 @@
     </style>
 
     <form id="form-siswa" method="POST" enctype="multipart/form-data"
-        action="{{ $edit ? route('super-admin.siswa.update', $siswaId) : route('super-admin.siswa.store') }}">
+        action="{{ $edit ? \App\Support\RoleRoute::safe('siswa.update', $siswaId) : \App\Support\RoleRoute::safe('siswa.store') }}">
         @csrf
         @if($edit) @method('PUT') @endif
 
@@ -396,7 +396,7 @@
         <div class="pager-foot">
             <div class="right">
                 <a class="btn btn-light"
-                    href="{{ $edit ? route('super-admin.siswa.show', $siswaId) : route('super-admin.siswa.index') }}">Batal</a>
+                    href="{{ $edit ? \App\Support\RoleRoute::safe('siswa.show', $siswaId) : \App\Support\RoleRoute::safe('siswa.index') }}">Batal</a>
                 <button type="submit" class="btn btn-primary">{{ $edit ? 'Simpan perubahan' : 'Simpan siswa' }}</button>
             </div>
         </div>

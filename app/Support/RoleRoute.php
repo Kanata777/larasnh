@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
  * Pemakaian:
  *   Controller : return redirect(RoleRoute::to('siswa.show', $id));
  *   Blade      : {{ \App\Support\RoleRoute::to('siswa.index') }}
+ *   Blade (aman, untuk tombol/form yang mungkin tidak dimiliki role): {{ \App\Support\RoleRoute::safe('siswa.store') }}
  */
 class RoleRoute
 {
@@ -26,6 +27,11 @@ class RoleRoute
             Role::Operator => 'operator',
             Role::KepalaSekolah => 'kepala-sekolah',
             Role::Guru => 'guru',
+            Role::GuruBk => 'guru-bk',
+            Role::Kesiswaan => 'kesiswaan',
+            Role::WaliKelas => 'wali-kelas',
+            Role::GuruMapel => 'guru-mapel',
+            Role::OrangTua => 'orang-tua',
         };
     }
 
@@ -38,5 +44,14 @@ class RoleRoute
     public static function has(string $nama): bool
     {
         return \Illuminate\Support\Facades\Route::has(self::prefix() . '.' . $nama);
+    }
+
+    /**
+     * Seperti to(), tetapi mengembalikan '#' jika role ini tidak punya route tersebut.
+     * Dipakai di view bersama: panel yang disembunyikan untuk suatu role tidak membuat halaman error.
+     */
+    public static function safe(string $nama, mixed $parameter = [], bool $absolute = true): string
+    {
+        return self::has($nama) ? self::to($nama, $parameter, $absolute) : '#';
     }
 }

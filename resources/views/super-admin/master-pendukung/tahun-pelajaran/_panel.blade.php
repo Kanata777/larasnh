@@ -8,7 +8,7 @@
             <button type="button" class="btn btn-primary"
                     data-modal="modal-tahun"
                     data-title="Tambah Tahun Pelajaran"
-                    data-action="{{ route('super-admin.master-pendukung.tahun-pelajaran.store') }}"
+                    data-action="{{ \App\Support\RoleRoute::safe('master-pendukung.tahun-pelajaran.store') }}"
                     data-method="POST"
                     data-values="{{ json_encode(['nama' => '', 'tanggal_mulai' => '', 'tanggal_selesai' => '', 'keterangan' => '']) }}">
                 + Tambah Tahun Pelajaran
@@ -45,7 +45,7 @@
                             <td class="actions">
                                 @unless($aktif)
                                     <form class="inline-form" method="POST"
-                                          action="{{ route('super-admin.master-pendukung.tahun-pelajaran.activate', $t->id) }}"
+                                          action="{{ \App\Support\RoleRoute::safe('master-pendukung.tahun-pelajaran.activate', $t->id) }}"
                                           onsubmit="return confirm('Aktifkan tahun pelajaran {{ $t->nama }}? Tahun pelajaran aktif lainnya akan dinonaktifkan.')">
                                         @csrf
                                         @method('PATCH')
@@ -55,7 +55,7 @@
                                 <button type="button" class="btn btn-light btn-sm"
                                         data-modal="modal-tahun"
                                         data-title="Edit Tahun Pelajaran"
-                                        data-action="{{ route('super-admin.master-pendukung.tahun-pelajaran.update', $t->id) }}"
+                                        data-action="{{ \App\Support\RoleRoute::safe('master-pendukung.tahun-pelajaran.update', $t->id) }}"
                                         data-method="PUT"
                                         data-values="{{ json_encode(['nama' => $t->nama, 'tanggal_mulai' => $t->tanggal_mulai, 'tanggal_selesai' => $t->tanggal_selesai, 'keterangan' => $t->keterangan]) }}">
                                     Edit

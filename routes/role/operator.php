@@ -13,7 +13,6 @@
 
 use App\Http\Controllers\SuperAdmin\LaporanController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\IndexController as MasterIndexController;
-use App\Http\Controllers\SuperAdmin\MasterPendukung\ReferensiController as MasterReferensiController;
 use App\Http\Controllers\SuperAdmin\SiswaController;
 use Illuminate\Support\Facades\Route;
 
@@ -34,11 +33,6 @@ Route::prefix('siswa')->name('siswa.')->where(['id' => '[0-9]+'])->group(functio
 /* ===== Master Pendukung (lihat, kecuali data orang tua boleh diubah) ===== */
 Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () {
     Route::get('/', MasterIndexController::class)->name('index');
-
-    Route::controller(MasterReferensiController::class)->group(function () {
-        Route::post('orang-tua', 'storeOrangTua')->name('orang-tua.store');
-        Route::put('orang-tua/{orangTua}', 'updateOrangTua')->name('orang-tua.update');
-    });
 });
 
 /* ===== Laporan (terbatas) ===== */

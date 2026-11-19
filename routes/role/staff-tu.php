@@ -6,24 +6,32 @@
 |--------------------------------------------------------------------------
 | URL /staff-tu/…  |  nama route "staff-tu."  (diatur di routes/web.php)
 |
-| Boleh : siswa (lihat, tambah, edit, ubah status, import), kelas (tambah,
-|         ubah, import), data orang tua (tambah, ubah), semua laporan,
-|         cetak dokumen, export.
-| Tidak : tahun pelajaran, wali kelas, ubah referensi, hapus orang tua
-|         (khusus Kepala TU), hapus siswa & kelola user (khusus Super Admin).
+| Sama dengan Super Admin, KECUALI:
+|   - Tahun pelajaran            : tidak ada
+|   - Wali kelas (atur wali)     : tidak ada
+|   - Ubah referensi             : tidak ada
+|   - Hapus orang tua            : tidak ada (khusus Kepala TU)
+|   - Hapus / pulihkan siswa     : tidak ada (khusus Super Admin)
+|   - Kelola user & role         : tidak ada (khusus Super Admin)
+|
+| Tambahan dari modul BK (diatur di routes/bk.php, URL /bk/...):
+|   - Naik Kelas  (bk.naik-kelas.*)
+|   - Pindah Kelas (bk.pindah-kelas.*)
 */
 
+use App\Http\Controllers\SuperAdmin\DashboardController;
 use App\Http\Controllers\SuperAdmin\LaporanController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\IndexController as MasterIndexController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasController as MasterKelasController;
 use App\Http\Controllers\SuperAdmin\MasterPendukung\KelasImportController as MasterKelasImportController;
-use App\Http\Controllers\SuperAdmin\MasterPendukung\ReferensiController as MasterReferensiController;
+use App\Http\Controllers\SuperAdmin\MasterPendukung\OrangTuaController as MasterOrangTuaController;
 use App\Http\Controllers\SuperAdmin\SiswaController;
+use App\Http\Controllers\SuperAdmin\SiswaExportController;
 use App\Http\Controllers\SuperAdmin\SiswaImportController;
 use Illuminate\Support\Facades\Route;
 
 /* ===== Dashboard ===== */
-Route::get('/dashboard', fn () => view('super-admin.dashboard'))->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 /* ===== Data Siswa ===== */
 Route::prefix('siswa')->name('siswa.')->where(['id' => '[0-9]+'])->group(function () {
@@ -39,18 +47,23 @@ Route::prefix('siswa')->name('siswa.')->where(['id' => '[0-9]+'])->group(functio
         ->with('info', 'Silakan unggah ulang file untuk melanjutkan.'));
     Route::post('/import/process', [SiswaImportController::class, 'process'])->name('import.process');
 
+    // Export Excel
+    Route::get('/{id}/export', [SiswaExportController::class, 'siswa'])->name('export');
+
     // Detail, ubah, status (mutasi/lulus)
     Route::get('/{id}', [SiswaController::class, 'show'])->name('show');
     Route::get('/{id}/edit', [SiswaController::class, 'edit'])->name('edit');
     Route::put('/{id}', [SiswaController::class, 'update'])->name('update');
     Route::patch('/{id}/status', [SiswaController::class, 'status'])->name('status');
+
+    // TIDAK ADA: terhapus, pulihkan, hapus siswa (khusus Super Admin)
 });
 
 /* ===== Master Pendukung ===== */
 Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () {
     Route::get('/', MasterIndexController::class)->name('index');
 
-    // Kelas / rombel (tambah, ubah, import) — wali kelas khusus Kepala TU
+    // Kelas / rombel (tambah, ubah, import). Atur wali kelas TIDAK ada.
     Route::controller(MasterKelasController::class)->prefix('kelas')->name('kelas.')->group(function () {
         Route::post('/', 'store')->name('store');
         Route::put('{id}', 'update')->name('update');
@@ -61,11 +74,14 @@ Route::prefix('master-pendukung')->name('master-pendukung.')->group(function () 
         Route::post('cancel', 'cancel')->name('cancel');
     });
 
-    // Data orang tua (tambah, ubah) — hapus khusus Kepala TU
-    Route::controller(MasterReferensiController::class)->group(function () {
-        Route::post('orang-tua', 'storeOrangTua')->name('orang-tua.store');
-        Route::put('orang-tua/{orangTua}', 'updateOrangTua')->name('orang-tua.update');
-    });
+    // TIDAK ADA: tahun pelajaran, referensi
+});
+
+/* ===== Data Orang Tua (tambah, ubah; hapus khusus Kepala TU) ===== */
+Route::prefix('orang-tua')->name('orang-tua.')->controller(MasterOrangTuaController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::post('/', 'store')->name('store');
+    Route::put('{orangTua}', 'update')->name('update');
 });
 
 /* ===== Laporan ===== */

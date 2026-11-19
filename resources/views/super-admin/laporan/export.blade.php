@@ -6,7 +6,7 @@
         <h2>Export Data</h2>
         <p class="lap-muted">Unduh data siswa dalam format Excel untuk kebutuhan lain, misalnya Dapodik.</p>
     </div>
-    <div class="lap-actions"><a class="lap-btn" href="{{ route('super-admin.laporan.index') }}">← Menu laporan</a></div>
+    <div class="lap-actions"><a class="lap-btn" href="{{ \App\Support\RoleRoute::safe('laporan.index') }}">← Menu laporan</a></div>
 </div>
 
 <form method="GET" class="lap-card">
@@ -31,8 +31,8 @@
         </select>
     </div>
     <div class="lap-row">
-        <button class="lap-btn lap-btn-primary" formaction="{{ route('super-admin.laporan.export.unduh', 'lengkap') }}">Export data lengkap (semua kolom)</button>
-        <button class="lap-btn" formaction="{{ route('super-admin.laporan.export.unduh', 'dapodik') }}">Export format Dapodik (kolom dasar)</button>
+        <button class="lap-btn lap-btn-primary" formaction="{{ \App\Support\RoleRoute::safe('laporan.export.unduh', 'lengkap') }}">Export data lengkap (semua kolom)</button>
+        <button class="lap-btn" formaction="{{ \App\Support\RoleRoute::safe('laporan.export.unduh', 'dapodik') }}">Export format Dapodik (kolom dasar)</button>
     </div>
     <p class="lap-muted" style="margin-top:12px">
         <b>Data lengkap</b> memuat identitas siswa, alamat, kontak, data ayah, ibu, dan wali, bantuan (KPS/KIP/PIP) dan rekening,

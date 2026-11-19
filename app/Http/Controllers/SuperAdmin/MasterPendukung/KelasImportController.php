@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\SuperAdmin\MasterPendukung;
 
+use App\Support\RoleRoute;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -269,7 +270,7 @@ class KelasImportController extends BaseController
     private function bukaModal(): RedirectResponse
     {
         return redirect()
-            ->to(route('super-admin.master-pendukung.index') . '#kelas')
+            ->to(RoleRoute::to('master-pendukung.index') . '#kelas')
             ->with('open_import_kelas', true);
     }
 }
